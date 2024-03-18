@@ -2,6 +2,7 @@ package com.example.cs206;
 
 import android.content.Context;
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.graphics.Paint;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
@@ -37,7 +38,20 @@ public class JoystickView extends View {
 
     @Override
     protected void onDraw(Canvas canvas) {
-        canvas.drawCircle(xPosition, yPosition, 100, circlePaint);
+        // Draw the outer circle of the joystick
+        circlePaint.setColor(Color.GRAY);
+        canvas.drawCircle(center_x, center_y, 100, circlePaint);
+
+        // Draw the inner circle of the joystick
+        circlePaint.setColor(Color.parseColor("#A9A9A9"));
+        canvas.drawCircle(xPosition, yPosition, 50, circlePaint);
+
+//        // Draw the buttons of the retro controller
+//        circlePaint.setColor(Color.RED);
+//        canvas.drawCircle(center_x - 150, center_y, 30, circlePaint);
+//        canvas.drawCircle(center_x - 150, center_y - 70, 30, circlePaint);
+//        canvas.drawCircle(center_x - 150, center_y + 70, 30, circlePaint);
+//        canvas.drawCircle(center_x - 220, center_y, 30, circlePaint);
     }
 
     @Override
@@ -59,6 +73,10 @@ public class JoystickView extends View {
                     // If the distance is greater than the radius of the joystick, keep the joystick on the edge of the circle
                     xPosition = center_x + (newXPosition - center_x) * 100 / distance;
                     yPosition = center_y + (newYPosition - center_y) * 100 / distance;
+
+                    if (joystickListener != null) {
+                        joystickListener.onJoystickHold((xPosition - center_x) / center_x, (center_y - yPosition) / center_y);
+                    }
                 }
                 break;
 
@@ -66,6 +84,10 @@ public class JoystickView extends View {
                 // When the user stops touching the screen, reset the position of the joystick to the center
                 xPosition = center_x;
                 yPosition = center_y;
+
+                if (joystickListener != null) {
+                    joystickListener.onJoystickReleased();
+                }
                 break;
         }
 
@@ -84,7 +106,10 @@ public class JoystickView extends View {
 
     public interface JoystickListener {
         void onJoystickMoved(float xPercent, float yPercent);
+        void onJoystickReleased();
+        void onJoystickHold(float xPercent, float yPercent);
     }
+
     public void setColor(int color) {
         circlePaint.setColor(color);
         invalidate();
