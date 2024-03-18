@@ -36,6 +36,15 @@ public class JoystickView extends View {
         yPosition = center_y;
     }
 
+    public float getNormalizedX() {
+        return (xPosition - center_x) / center_x;
+    }
+
+    public float getNormalizedY() {
+        return (center_y - yPosition) / center_y;
+    }
+
+
     @Override
     protected void onDraw(Canvas canvas) {
         // Draw the outer circle of the joystick

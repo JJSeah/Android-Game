@@ -15,6 +15,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
+
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 
@@ -27,6 +29,10 @@ public class MainActivity extends AppCompatActivity {
     private GameView gameView;
     private Enemy enemy;
     private Player player;
+    private float screenWidth;
+    private float screenHeight;
+    private ProgressBar reloadProgressBar;
+
 
     private Runnable runnable = new Runnable() {
         @Override
@@ -34,6 +40,18 @@ public class MainActivity extends AppCompatActivity {
             // Update the enemy's position
             enemy.update();
 
+            // Move the bullet and check for collisions
+            if (!player.getBullets().isEmpty()) {
+                Bullet bullet = player.getBullets().get(0);
+                bullet.move();
+                if (bullet.collidesWith(enemy) || bullet.collidesWithWall(screenWidth, screenHeight)) {
+                    player.getBullets().remove(bullet);
+                    if (bullet.collidesWith(enemy)){
+                        score++; // Increment the score
+                        updateScore(); // Update the score display
+                    }
+                }
+            }
             // Check if the enemy's health is 0
             if (enemy.getHealth() <= 0) {
                 score++; // Increment the score
@@ -49,6 +67,9 @@ public class MainActivity extends AppCompatActivity {
                 // Schedule the next update
                 handler.postDelayed(this, 100);
             }
+            // Update the reload progress bar
+            int reloadProgress = player.getReloadProgress();
+            reloadProgressBar.setProgress(reloadProgress);
         }
     };
     private void updateScore() {
@@ -65,26 +86,37 @@ public class MainActivity extends AppCompatActivity {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
-        shootButton = (Button) findViewById(R.id.Y); // Add this line
+        reloadProgressBar = findViewById(R.id.reloadProgressBar);
+        shootButton = (Button) findViewById(R.id.Y);
+        JoystickView joystick = (JoystickView) findViewById(R.id.joystickView);
+        scoreTextView = (TextView) findViewById(R.id.scoreTextView);
+        updateScore();
 
         shootButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                player.shoot();
+                // Get the joystick's position
+                float joystickX = joystick.getNormalizedX();
+                float joystickY = joystick.getNormalizedY();
+
+                // Calculate the direction based on the joystick's position
+                float direction = (float) Math.atan2(joystickY - player.getY(), joystickX - player.getX());
+
+                // Shoot in the direction of the joystick
+                player.shoot(direction);
             }
         });
 
-        scoreTextView = (TextView) findViewById(R.id.scoreTextView); // Add this line
-        updateScore(); // Add this line
+
 
         // Initialize the GameView and Enemy instances
-        float screenWidth = getResources().getDisplayMetrics().widthPixels;
-        float screenHeight = getResources().getDisplayMetrics().heightPixels;
+        screenWidth = getResources().getDisplayMetrics().widthPixels;
+        screenHeight = getResources().getDisplayMetrics().heightPixels;
         // Only create a new Enemy if one doesn't already exist
         if (enemy == null) {
             enemy = new Enemy(0, 0, 5, 5, screenWidth, screenHeight);
         }
-        player = new Player(screenWidth / 2, screenHeight / 2, 50);
+        player = new Player(screenWidth / 2, screenHeight / 2, 50, screenWidth, screenHeight);
         gameView = new GameView(this, player, enemy);
 
         // Set the size of the GameView
@@ -94,7 +126,7 @@ public class MainActivity extends AppCompatActivity {
         // Add the GameView to your layout
         ((ViewGroup) findViewById(R.id.main)).addView(gameView);
 
-        JoystickView joystick = (JoystickView) findViewById(R.id.joystickView);
+        // Set the joystick's listener
         joystick.setJoystickListener(new JoystickView.JoystickListener() {
             @Override
             public void onJoystickMoved(float xPercent, float yPercent) {
