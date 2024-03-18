@@ -8,6 +8,7 @@ import android.os.Handler;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.Button;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
@@ -20,6 +21,7 @@ import android.widget.TextView;
 public class MainActivity extends AppCompatActivity {
     ImageView avatar;
     private Handler handler = new Handler();
+    private Button shootButton;
     private int score = 0; // Add this line
     private TextView scoreTextView; // Add this line
     private GameView gameView;
@@ -63,7 +65,14 @@ public class MainActivity extends AppCompatActivity {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
+        shootButton = (Button) findViewById(R.id.Y); // Add this line
 
+        shootButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                player.shoot();
+            }
+        });
 
         scoreTextView = (TextView) findViewById(R.id.scoreTextView); // Add this line
         updateScore(); // Add this line
