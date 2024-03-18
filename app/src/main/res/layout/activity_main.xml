@@ -12,17 +12,10 @@
         android:layout_height="match_parent"
         android:orientation="vertical">
 
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="1"
-            android:text="Hello world"/>
-
         <RelativeLayout
             android:layout_width="wrap_content"
             android:layout_height="0dp"
-            android:layout_weight="7"
-            >
+            android:layout_weight="7">
 
             <ImageView
                 android:id="@+id/image"
@@ -36,56 +29,21 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
 
+                <ImageView
+                    android:id="@+id/avatar"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/ic_launcher_foreground" />
             </RelativeLayout>
-
-            <ImageView
-                android:id="@+id/avatar"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:src="@drawable/ic_launcher_foreground"/>
-
 
         </RelativeLayout>
 
+        <com.example.cs206.JoystickView
+            android:id="@+id/joystickView"
+            android:layout_width="300dp"
+            android:layout_height="300dp"
+            />
 
-        <LinearLayout
-            android:id="@+id/touchPad"
-            android:layout_weight="2"
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:gravity="center"
-            android:orientation="horizontal">
-
-            <Button
-                android:id="@+id/buttonLeft"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="Left" />
-
-            <Button
-                android:id="@+id/buttonRight"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="Right" />
-
-            <Button
-                android:id="@+id/buttonUp"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="Up" />
-
-            <Button
-                android:id="@+id/buttonDown"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="Down"/>
-
-        </LinearLayout>
     </LinearLayout>
-
 
 </RelativeLayout>
