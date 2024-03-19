@@ -15,71 +15,81 @@
         <RelativeLayout
             android:layout_width="wrap_content"
             android:layout_height="0dp"
-            android:layout_weight="7"/>
+            android:layout_weight="7">
+
+        </RelativeLayout>
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal">
+            android:layout_height="150dp"
+            android:gravity="bottom"
+            android:orientation="vertical">
 
-
-            <LinearLayout
-                android:layout_width="21dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:orientation="vertical">
-
-                <com.example.cs206.JoystickView
-                    android:id="@+id/joystickView"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1" />
-
-                <ProgressBar
-                    android:id="@+id/reloadProgressBar"
-                    style="?android:attr/progressBarStyleHorizontal"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:indeterminate="false"
-                    android:max="100" />
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="0dp"
+            <ProgressBar
+                android:id="@+id/reloadProgressBar"
+                style="?android:attr/progressBarStyleHorizontal"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
-                android:layout_weight="1"
-                android:gravity="center"
-                android:orientation="vertical">
+                android:indeterminate="false"
+                android:max="100" />
 
-                <Button
-                    android:id="@+id/X"
-                    android:layout_width="60dp"
-                    android:layout_height="60dp"
-                    android:background="@drawable/circle_button"
-                    android:text="X"
-                    android:textColor="#FFFFFF" />
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
 
-                <Button
-                    android:id="@+id/Y"
-                    android:layout_width="60dp"
-                    android:layout_height="60dp"
-                    android:background="@drawable/circle_button"
-                    android:text="Y"
-                    android:textColor="#FFFFFF"
-                    android:layout_margin="10dp" />
 
-                <TextView
-                    android:id="@+id/scoreTextView"
-                    android:layout_width="wrap_content"
+                <LinearLayout
+                    android:layout_width="21dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:orientation="vertical">
+
+                    <com.example.cs206.JoystickView
+                        android:id="@+id/joystickView"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_margin="6dp"
-                    android:text="Score: 0"
-                    android:textSize="24sp" />
+                    android:layout_gravity="center_horizontal"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:orientation="vertical">
+
+                    <Button
+                        android:id="@+id/X"
+                        android:layout_width="60dp"
+                        android:layout_height="60dp"
+                        android:background="@drawable/circle_button"
+                        android:text="X"
+                        android:textColor="#FFFFFF" />
+
+                    <Button
+                        android:id="@+id/Y"
+                        android:layout_width="60dp"
+                        android:layout_height="60dp"
+                        android:layout_margin="10dp"
+                        android:background="@drawable/circle_button"
+                        android:text="Y"
+                        android:textColor="#FFFFFF" />
+
+                    <TextView
+                        android:id="@+id/scoreTextView"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="6dp"
+                        android:text="Score: 0"
+                        android:textSize="24sp" />
+
+                </LinearLayout>
+
 
             </LinearLayout>
-
-
         </LinearLayout>
 
     </LinearLayout>

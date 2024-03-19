@@ -12,19 +12,25 @@ public class Enemy {
     private float screenWidth;
     private float screenHeight;
     private int health = 100; // Initial health
+    private long lastUpdateTime;
+
 
     public Enemy(float x, float y, float speedX, float speedY, float screenWidth, float screenHeight) {
         this.x = x;
         this.y = y;
-        this.speedX = speedX;
-        this.speedY = speedY;
+        this.speedX = speedX *20;
+        this.speedY = speedY *20;
         this.screenWidth = screenWidth;
         this.screenHeight = screenHeight;
+        this.lastUpdateTime = System.currentTimeMillis(); // Initialize the last update time
     }
 
     public void update() {
-        x += speedX;
-        y += speedY;
+        long currentTime = System.currentTimeMillis();
+        float timeDelta = (currentTime - lastUpdateTime) / 1000f; // Calculate the time delta in seconds
+
+        x += speedX * timeDelta;
+        y += speedY * timeDelta;
 
         // Check for boundary and reverse direction if necessary
         if (x < 0 || x > screenWidth) {
@@ -33,6 +39,8 @@ public class Enemy {
         if (y < 0 || y > screenHeight * 0.75) { // Limit the enemy's y position to 3/4 of the screen height
             speedY = -speedY;
         }
+
+        lastUpdateTime = currentTime; // Update the last update time
     }
 
     public void draw(Canvas canvas, Paint paint) {

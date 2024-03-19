@@ -36,7 +36,8 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
 
             public void onFinish() {
                 // Start the end game activity
-                Intent intent = new Intent(context, EndGameActivity.class);
+//                Intent intent = new Intent(context, EndGameActivity.class);
+                Intent intent = new Intent(context, LeaderboardActivity.class);
                 context.startActivity(intent);
             }
         }.start(); // Start the timer
