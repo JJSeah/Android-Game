@@ -35,19 +35,15 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         onCreate(db);
     }
 
-    // Method to insert or update player's score
-    public void insertOrUpdateScore(int score) {
+    // Method to insert
+    public void insertScore(int score) {
         SQLiteDatabase db = this.getWritableDatabase();
 
         ContentValues values = new ContentValues();
         values.put(COLUMN_SCORE, score);
 
-        // Check if the row already exists
-        if (db.update(TABLE_PLAYER_SCORE, values, COLUMN_ID + "=1", null) == 0) {
-            // If the row does not exist, insert a new row
-            values.put(COLUMN_ID, 1);
-            db.insert(TABLE_PLAYER_SCORE, null, values);
-        }
+        // Insert a new row
+        db.insert(TABLE_PLAYER_SCORE, null, values);
 
         db.close();
     }

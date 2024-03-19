@@ -11,6 +11,9 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 
+import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.LinkedBlockingQueue;
+
 public class Player {
     private float x;
     private float y;
@@ -27,6 +30,9 @@ public class Player {
     private boolean isReloading = false;
     private ScheduledExecutorService scheduler;
 
+    private BlockingQueue<Integer> damageQueue = new LinkedBlockingQueue<>();
+    private int health = 100; // Initial health
+
 
     public Player(float x, float y, float radius, float screenWidth, float screenHeight) {
         this.x = x;
@@ -39,9 +45,40 @@ public class Player {
         this.scheduler = Executors.newScheduledThreadPool(1);
 
     }
+    public void takeDamage(int damage) {
+        // This is the producer
+        try {
+            damageQueue.put(damage);
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+        }
+    }
 
+    public void updateHealth() {
+        // This is the consumer
+        new Thread(() -> {
+            while (true) {
+                try {
+                    int damage = damageQueue.take();
+                    health -= damage;
+                    if (health <= 0) {
+                        // Player is dead, handle game over
+                        break;
+                    }
+                } catch (InterruptedException e) {
+                    Thread.currentThread().interrupt();
+                }
+            }
+        }).start();
+    }
     public void draw(Canvas canvas, Paint paint) {
-        paint.setColor(Color.BLUE);
+        if (health > 70) {
+            paint.setColor(Color.GREEN);
+        } else if (health > 30) {
+            paint.setColor(Color.YELLOW);
+        } else {
+            paint.setColor(Color.RED);
+        }
         canvas.drawCircle(x, y, radius, paint);
 
         // Draw all the bullets
@@ -60,6 +97,7 @@ public class Player {
                 bullets.add(bullet);
                 lastFireTime = currentTime;
                 reload(); // Start reloading after shooting
+
             }
         }
     }
@@ -120,5 +158,9 @@ public synchronized void reload() {
 
     public List<Bullet> getBullets() {
         return bullets;
+    }
+
+    public int getHealth() {
+        return health;
     }
 }

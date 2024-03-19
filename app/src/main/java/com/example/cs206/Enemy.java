@@ -2,7 +2,9 @@ package com.example.cs206;
 
 import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.LinearGradient;
 import android.graphics.Paint;
+import android.graphics.Shader;
 
 public class Enemy {
     private float x;
@@ -13,6 +15,8 @@ public class Enemy {
     private float screenHeight;
     private int health = 100; // Initial health
     private long lastUpdateTime;
+    private Paint paint; // Used for drawing the enemy
+
 
 
     public Enemy(float x, float y, float speedX, float speedY, float screenWidth, float screenHeight) {
@@ -23,6 +27,12 @@ public class Enemy {
         this.screenWidth = screenWidth;
         this.screenHeight = screenHeight;
         this.lastUpdateTime = System.currentTimeMillis(); // Initialize the last update time
+
+        // Initialize the Paint object
+        paint = new Paint();
+        paint.setColor(Color.RED); // Set the color to red
+        paint.setShader(new LinearGradient(0, 0, 100, 100, Color.RED, Color.BLUE, Shader.TileMode.MIRROR)); // Set a gradient shader
+
     }
 
     public void update() {
@@ -44,7 +54,7 @@ public class Enemy {
     }
 
     public void draw(Canvas canvas, Paint paint) {
-        paint.setColor(Color.RED);
+//        paint.setColor(Color.RED);
         canvas.drawRect(x, y, x + 50, y + 50, paint);
     }
 

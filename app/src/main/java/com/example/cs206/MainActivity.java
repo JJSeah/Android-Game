@@ -26,6 +26,10 @@ import android.os.VibrationEffect;
 import android.view.WindowManager;
 
 import java.util.Iterator;
+import android.media.MediaPlayer;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+
 
 
 public class MainActivity extends AppCompatActivity {
@@ -41,6 +45,11 @@ public class MainActivity extends AppCompatActivity {
     private float screenWidth;
     private float screenHeight;
     private ProgressBar reloadProgressBar;
+    private MediaPlayer mediaPlayer;
+
+    // Create a ScheduledExecutorService with a fixed thread pool
+    private ScheduledExecutorService executorService = Executors.newScheduledThreadPool(5);
+
 
     private Runnable bulletCollisionRunnable = new Runnable() {
         @Override
@@ -69,18 +78,7 @@ public class MainActivity extends AppCompatActivity {
         }
     };
 
-    private void vibrate() {
-        Vibrator v = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
-        // Vibrate for 500 milliseconds
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            v.vibrate(VibrationEffect.createOneShot(500, VibrationEffect.DEFAULT_AMPLITUDE));
-            Log.d("Vibration", "Vibration for 500 milliseconds (Oreo and above)");
-        } else {
-            //deprecated in API 26
-            v.vibrate(500);
-            Log.d("Vibration", "Vibration for 500 milliseconds (below Oreo)");
-        }
-    }
+
 private Handler reloadHandler = new Handler();
 private Runnable reloadRunnable = new Runnable() {
     @Override
@@ -88,60 +86,54 @@ private Runnable reloadRunnable = new Runnable() {
         // Update the reload progress bar
         int reloadProgress = player.getReloadProgress();
         reloadProgressBar.setProgress(reloadProgress);
+        System.out.println("Reload progress: " + reloadProgress);
 
         // Schedule the next update
         reloadHandler.postDelayed(this, 100);
     }
 };
-private Runnable runnable = new Runnable() {
-    @Override
-    public void run() {
-        // Update the enemy's position
-        enemy.update();
+    private Runnable runnable = new Runnable() {
+        @Override
+        public void run() {
+            // Update the enemy's position
+            enemy.update();
 
-        // Move the bullet and check for collisions
-        if (!player.getBullets().isEmpty()) {
-            // Start a new thread to check for bullet collisions
-            new Thread(bulletCollisionRunnable).start();
-            handler.post(bulletCollisionRunnable);
-        }
-        // Check if the enemy's health is 0
-        if (enemy.getHealth() <= 0) {
-            score++; // Increment the score
-            updateScore(); // Update the score display
-            // Start the end game activity
-            Intent intent = new Intent(MainActivity.this, EndGameActivity.class);
-            startActivity(intent);
-            finish();
-        } else {
-            // Redraw the GameView
-            gameView.invalidate();
+            // Check for collision between player and enemy
+            if (isColliding(player, enemy)) {
+                player.takeDamage(10); // Assume the player takes 10 damage when colliding with an enemy
+            }
 
-            // Schedule the next update
-            handler.postDelayed(this, 100);
-        }
-        // Update the reload progress bar
-        int reloadProgress = player.getReloadProgress();
-        reloadProgressBar.setProgress(reloadProgress);
-    }
-};
-    private void updateScore() {
-        scoreTextView.setText("Score: " + score);
-        dbHelper.insertOrUpdateScore(score); // Save the score to the database
-    }
-    private void updatePlayerPosition(float direction) {
-        // Calculate the new position based on the joystick's direction
-        float newXPosition = player.getX() + (float) Math.cos(direction) * 20; // Increase the multiplier to increase the speed
-        float newYPosition = player.getY() - (float) Math.sin(direction) * 20; // Increase the multiplier to increase the speed
+            // Move the bullet and check for collisions
+            if (!player.getBullets().isEmpty()) {
+                // Submit the bulletCollisionRunnable to the executorService
+                executorService.submit(bulletCollisionRunnable);
+            }
 
-        // Check if the new position is within the screen bounds
-        if (newXPosition - player.getRadius() >= 0 && newXPosition + player.getRadius() <= screenWidth) {
-            player.setX(newXPosition);
+            // Check if the player's health is 0
+            if (player.getHealth() <= 0) {
+                // Player is dead, handle game over
+                handleGameOver();
+            }
+            // Check if the enemy's health is 0
+            if (enemy.getHealth() <= 0) {
+                score++; // Increment the score
+                updateScore(); // Update the score display
+//            dbHelper.insertScore(score); // Save the score to the database
+                // Start the end game activity
+                Intent intent = new Intent(MainActivity.this, LeaderboardActivity.class);
+                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK); // remove back stack
+                startActivity(intent);
+                finish();
+            } else {
+                // Redraw the GameView
+                gameView.invalidate();
+
+                // Schedule the next update
+                handler.postDelayed(this, 100);
+            }
         }
-        if (newYPosition - player.getRadius() >= 0 && newYPosition + player.getRadius() <= screenHeight * 0.75){
-            player.setY(newYPosition);
-        }
-    }
+    };
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -154,6 +146,11 @@ private Runnable runnable = new Runnable() {
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         dbHelper = new DatabaseHelper(this); // Initialize the DatabaseHelper
 
+        // Initialize the MediaPlayer with the music file
+        mediaPlayer = MediaPlayer.create(this, R.raw.game_music);
+        mediaPlayer.setLooping(true); // Set looping
+        mediaPlayer.start(); // Start the music
+
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
@@ -164,7 +161,12 @@ private Runnable runnable = new Runnable() {
         JoystickView joystick = (JoystickView) findViewById(R.id.joystickView);
         scoreTextView = (TextView) findViewById(R.id.scoreTextView);
         updateScore();
-        reloadHandler.post(reloadRunnable);
+
+        // Initialize the Player instance
+        player = new Player(screenWidth / 2, screenHeight / 2, 50, screenWidth, screenHeight);
+
+        // Now that the Player object is initialized, you can call updateHealth
+        player.updateHealth();
 
         shootButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -178,6 +180,10 @@ private Runnable runnable = new Runnable() {
 
                 // Shoot in the direction of the joystick
                 player.shoot(direction);
+
+                // Call reloadRunnable after shooting a bullet
+                reloadHandler.removeCallbacks(reloadRunnable);
+                reloadHandler.post(reloadRunnable);
             }
         });
 
@@ -235,7 +241,50 @@ private Runnable runnable = new Runnable() {
     }
 
 
+    private void handleGameOver() {
+        // Stop the update loop
+        handler.removeCallbacks(runnable);
 
+        // Navigate to a game over screen or show a game over dialog
+        // This is just an example, replace with your own game over handling logic
+        Intent intent = new Intent(MainActivity.this, LeaderboardActivity.class);
+        startActivity(intent);
+        finish();
+    }
+    private void updateScore() {
+        scoreTextView.setText("Score: " + score);
+    }
+    private void updatePlayerPosition(float direction) {
+        // Calculate the new position based on the joystick's direction
+        float newXPosition = player.getX() + (float) Math.cos(direction) * 20; // Increase the multiplier to increase the speed
+        float newYPosition = player.getY() - (float) Math.sin(direction) * 20; // Increase the multiplier to increase the speed
+
+        // Check if the new position is within the screen bounds
+        if (newXPosition - player.getRadius() >= 0 && newXPosition + player.getRadius() <= screenWidth) {
+            player.setX(newXPosition);
+        }
+        if (newYPosition - player.getRadius() >= 0 && newYPosition + player.getRadius() <= screenHeight * 0.75){
+            player.setY(newYPosition);
+        }
+    }
+    private boolean isColliding(Player player, Enemy enemy) {
+        // Implement your collision detection logic here
+        // This is a simple example using circular collision detection
+        float distance = (float) Math.sqrt(Math.pow(player.getX() - enemy.getX(), 2) + Math.pow(player.getY() - enemy.getY(), 2));
+        return distance < (player.getRadius() + enemy.getRadius());
+    }
+    private void vibrate() {
+        Vibrator v = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
+        // Vibrate for 500 milliseconds
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            v.vibrate(VibrationEffect.createOneShot(500, VibrationEffect.DEFAULT_AMPLITUDE));
+            Log.d("Vibration", "Vibration for 500 milliseconds (Oreo and above)");
+        } else {
+            //deprecated in API 26
+            v.vibrate(500);
+            Log.d("Vibration", "Vibration for 500 milliseconds (below Oreo)");
+        }
+    }
     @Override
     protected void onDestroy() {
         super.onDestroy();
@@ -243,6 +292,16 @@ private Runnable runnable = new Runnable() {
         // Stop the update loop when the activity is destroyed
         handler.removeCallbacks(runnable);
         reloadHandler.removeCallbacks(reloadRunnable);
+
+        // Shutdown the executorService when the activity is destroyed
+        executorService.shutdown();
+
+        // Stop the music when the activity is destroyed
+        if (mediaPlayer != null) {
+            mediaPlayer.stop();
+            mediaPlayer.release();
+            mediaPlayer = null;
+        }
 
     }
 }
