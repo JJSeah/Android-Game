@@ -25,6 +25,8 @@ import android.os.Vibrator;
 import android.os.VibrationEffect;
 import android.view.WindowManager;
 
+import java.util.Iterator;
+
 
 public class MainActivity extends AppCompatActivity {
     ImageView avatar;
@@ -40,6 +42,45 @@ public class MainActivity extends AppCompatActivity {
     private float screenHeight;
     private ProgressBar reloadProgressBar;
 
+    private Runnable bulletCollisionRunnable = new Runnable() {
+        @Override
+        public void run() {
+            // Loop through each bullet in the player's bullet list
+            for (Iterator<Bullet> iterator = player.getBullets().iterator(); iterator.hasNext();) {
+                Bullet bullet = iterator.next();
+                // Move the bullet and check for collisions
+                bullet.move();
+                if (bullet.collidesWith(enemy) || bullet.collidesWithWall(screenWidth, screenHeight)) {
+                    iterator.remove();
+                    if (bullet.collidesWith(enemy)){
+                        score++; // Increment the score
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                updateScore(); // Update the score display
+                            }
+                        });
+                        vibrate();
+                    }
+                }
+            }
+            // Schedule the next update
+            handler.postDelayed(this, 100);
+        }
+    };
+
+    private void vibrate() {
+        Vibrator v = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
+        // Vibrate for 500 milliseconds
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            v.vibrate(VibrationEffect.createOneShot(500, VibrationEffect.DEFAULT_AMPLITUDE));
+            Log.d("Vibration", "Vibration for 500 milliseconds (Oreo and above)");
+        } else {
+            //deprecated in API 26
+            v.vibrate(500);
+            Log.d("Vibration", "Vibration for 500 milliseconds (below Oreo)");
+        }
+    }
 private Handler reloadHandler = new Handler();
 private Runnable reloadRunnable = new Runnable() {
     @Override
@@ -60,26 +101,9 @@ private Runnable runnable = new Runnable() {
 
         // Move the bullet and check for collisions
         if (!player.getBullets().isEmpty()) {
-            Bullet bullet = player.getBullets().get(0);
-            bullet.move();
-            if (bullet.collidesWith(enemy) || bullet.collidesWithWall(screenWidth, screenHeight)) {
-                player.getBullets().remove(bullet);
-                if (bullet.collidesWith(enemy)){
-                    score++; // Increment the score
-                    updateScore(); // Update the score display
-                    Vibrator v = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
-
-                    // Vibrate for 500 milliseconds
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                        v.vibrate(VibrationEffect.createOneShot(500, VibrationEffect.DEFAULT_AMPLITUDE));
-                        Log.d("Vibration", "Vibration for 500 milliseconds (Oreo and above)");
-                    } else {
-                        //deprecated in API 26
-                        v.vibrate(500);
-                        Log.d("Vibration", "Vibration for 500 milliseconds (below Oreo)");
-                    }
-                }
-            }
+            // Start a new thread to check for bullet collisions
+            new Thread(bulletCollisionRunnable).start();
+            handler.post(bulletCollisionRunnable);
         }
         // Check if the enemy's health is 0
         if (enemy.getHealth() <= 0) {
