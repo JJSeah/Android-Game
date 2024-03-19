@@ -75,6 +75,19 @@ public class MainActivity extends AppCompatActivity {
     private void updateScore() {
         scoreTextView.setText("Score: " + score);
     }
+    private void updatePlayerPosition(float direction) {
+        // Calculate the new position based on the joystick's direction
+        float newXPosition = player.getX() + (float) Math.cos(direction) * 20; // Increase the multiplier to increase the speed
+        float newYPosition = player.getY() - (float) Math.sin(direction) * 20; // Increase the multiplier to increase the speed
+
+        // Check if the new position is within the screen bounds
+        if (newXPosition - player.getRadius() >= 0 && newXPosition + player.getRadius() <= screenWidth) {
+            player.setX(newXPosition);
+        }
+        if (newYPosition - player.getRadius() >= 0 && newYPosition + player.getRadius() <= screenHeight * 0.75){
+            player.setY(newYPosition);
+        }
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -130,17 +143,11 @@ public class MainActivity extends AppCompatActivity {
         joystick.setJoystickListener(new JoystickView.JoystickListener() {
             @Override
             public void onJoystickMoved(float xPercent, float yPercent) {
-                // Update the player's position based on the joystick's movement
-                float newXPosition = player.getX() + xPercent * 20; // Increase the multiplier to increase the speed
-                float newYPosition = player.getY() - yPercent * 20; // Increase the multiplier to increase the speed
+                // Calculate the direction based on the joystick's movement
+                float direction = (float) Math.atan2(yPercent, xPercent);
 
-                // Check if the new position is within the screen bounds
-                if (newXPosition >= 0 && newXPosition <= findViewById(R.id.main).getWidth() - player.getRadius()) {
-                    player.setX(newXPosition);
-                }
-                if (newYPosition >= 0 && newYPosition <= findViewById(R.id.main).getHeight() - player.getRadius()) {
-                    player.setY(newYPosition);
-                }
+                // Update the player's position based on the joystick's direction
+                updatePlayerPosition(direction);
 
                 // Start the update loop
                 handler.removeCallbacks(runnable);
@@ -155,24 +162,16 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public void onJoystickHold(float xPercent, float yPercent) {
-                // Update the player's position based on the joystick's movement
-                float newXPosition = player.getX() + xPercent * 20; // Increase the multiplier to increase the speed
-                float newYPosition = player.getY() - yPercent * 20; // Increase the multiplier to increase the speed
+                // Calculate the direction based on the joystick's movement
+                float direction = (float) Math.atan2(yPercent, xPercent);
 
-                // Check if the new position is within the screen bounds
-                if (newXPosition >= 0 && newXPosition <= findViewById(R.id.main).getWidth() - player.getRadius()) {
-                    player.setX(newXPosition);
-                }
-                if (newYPosition >= 0 && newYPosition <= findViewById(R.id.main).getHeight() - player.getRadius()) {
-                    player.setY(newYPosition);
-                }
-
-                // Start the update loop
-                handler.removeCallbacks(runnable);
-                handler.post(runnable);
+                // Update the player's position based on the joystick's direction
+                updatePlayerPosition(direction);
             }
         });
     }
+
+
 
     @Override
     protected void onDestroy() {

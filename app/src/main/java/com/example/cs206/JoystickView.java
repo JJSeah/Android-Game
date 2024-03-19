@@ -82,10 +82,10 @@ public class JoystickView extends View {
                     // If the distance is greater than the radius of the joystick, keep the joystick on the edge of the circle
                     xPosition = center_x + (newXPosition - center_x) * 100 / distance;
                     yPosition = center_y + (newYPosition - center_y) * 100 / distance;
+                }
 
-                    if (joystickListener != null) {
-                        joystickListener.onJoystickHold((xPosition - center_x) / center_x, (center_y - yPosition) / center_y);
-                    }
+                if (joystickListener != null) {
+                    joystickListener.onJoystickMoved((xPosition - center_x) / center_x, (center_y - yPosition) / center_y);
                 }
                 break;
 
@@ -101,10 +101,6 @@ public class JoystickView extends View {
         }
 
         invalidate();
-
-        if (joystickListener != null) {
-            joystickListener.onJoystickMoved((xPosition - center_x) / center_x, (center_y - yPosition) / center_y);
-        }
 
         return true;
     }
