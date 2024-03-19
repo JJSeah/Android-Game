@@ -1,4 +1,3 @@
-<?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
 
@@ -15,13 +14,7 @@
         android:theme="@style/Theme.CS206"
         tools:targetApi="31">
         <activity
-            android:name=".LeaderboardActivity"
-            android:exported="false" />
-        <activity
-            android:name=".EndGameActivity"
-            android:exported="false" />
-        <activity
-            android:name=".MainActivity"
+            android:name=".MainMenu"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -29,6 +22,15 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity
+            android:name=".LeaderboardActivity"
+            android:exported="false" />
+        <activity
+            android:name=".EndGameActivity"
+            android:exported="false" />
+        <activity
+            android:name=".MainActivity"
+            android:exported="true" />
     </application>
 
 </manifest>
