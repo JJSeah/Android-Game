@@ -1,3 +1,10 @@
 <resources>
     <string name="app_name">CS206</string>
+    <string name="game_name">Singapore, but it\'s 2100!</string>
+
+    <string name="game_description">
+        Singapore is being invaded by the Android monster!\n
+        Shoot down the monster before the it\'s too late!\n
+        The future of Singapore is in your hands
+    </string>
 </resources>

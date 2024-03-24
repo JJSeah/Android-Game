@@ -28,6 +28,7 @@ public class MainMenu extends AppCompatActivity {
         startButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
                 Intent intent = new Intent(MainMenu.this, MainActivity.class);
                 startActivity(intent);
             }

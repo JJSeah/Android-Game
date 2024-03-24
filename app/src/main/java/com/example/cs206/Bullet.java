@@ -53,7 +53,6 @@ public boolean collidesWith(Enemy enemy) {
     if (collision) {
         enemy.decreaseHealth(10); // Decrease health by 10, adjust this value as needed
     }
-
     return collision;
 }
 
