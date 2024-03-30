@@ -49,6 +49,9 @@ public class MainActivity extends AppCompatActivity {
 
     // Create a ScheduledExecutorService with a fixed thread pool
     private ScheduledExecutorService executorService = Executors.newScheduledThreadPool(5);
+    private boolean isActivityVisible;
+    private boolean isCollisionRunnableRunning = false;
+
 
 
     private Runnable bulletCollisionRunnable = new Runnable() {
@@ -91,15 +94,28 @@ private Runnable reloadRunnable = new Runnable() {
         reloadHandler.postDelayed(this, 100);
     }
 };
+    private Runnable collisionRunnable = new Runnable() {
+        @Override
+        public void run() {
+            // Check for collision between player and enemy
+            if (isColliding(player, enemy)) {
+                System.out.println("Collision detected!");
+                player.takeDamage(10); // Assume the player takes 10 damage when colliding with an enemy
+                if (player.getHealth() <= 0) {
+                    handleGameOver();
+                }
+            }
+            isCollisionRunnableRunning = false;
+        }
+    };
     private Runnable runnable = new Runnable() {
         @Override
         public void run() {
             // Update the enemy's position
             enemy.update();
-
-            // Check for collision between player and enemy
-            if (isColliding(player, enemy)) {
-                player.takeDamage(10); // Assume the player takes 10 damage when colliding with an enemy
+            if (!isCollisionRunnableRunning) {
+                isCollisionRunnableRunning = true;
+                new Thread(collisionRunnable).start();
             }
 
             // Move the bullet and check for collisions
@@ -108,21 +124,13 @@ private Runnable reloadRunnable = new Runnable() {
                 executorService.submit(bulletCollisionRunnable);
             }
 
-            // Check if the player's health is 0
-            if (player.getHealth() <= 0) {
-                // Player is dead, handle game over
-                handleGameOver();
-            }
             // Check if the enemy's health is 0
             if (enemy.getHealth() <= 0) {
                 score++; // Increment the score
-                updateScore(); // Update the score display
+                updateScore(); // Update the score display=
+                // Player is dead, handle game over
+                handleGameOver();
 //            dbHelper.insertScore(score); // Save the score to the database
-                // Start the end game activity
-                Intent intent = new Intent(MainActivity.this, LeaderboardActivity.class);
-                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK); // remove back stack
-                startActivity(intent);
-                finish();
             } else {
                 // Redraw the GameView
                 gameView.invalidate();
@@ -161,34 +169,23 @@ private Runnable reloadRunnable = new Runnable() {
         scoreTextView = (TextView) findViewById(R.id.scoreTextView);
         updateScore();
 
-        // Initialize the Player instance
-        player = new Player(screenWidth / 2, screenHeight / 2, 50, screenWidth, screenHeight);
 
-        // Now that the Player object is initialized, you can call updateHealth
-        player.updateHealth();
 
         shootButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // Get the joystick's position
-                float joystickX = joystick.getNormalizedX();
-                float joystickY = joystick.getNormalizedY();
-
-                // Calculate the direction based on the joystick's position
-//                float direction = (float) Math.atan2(joystickY - player.getY(), joystickX - player.getX());
+                // Shoot a bullet when the shoot button is clicked
                 float direction = (float) -Math.PI / 2; // -90 degrees in radians
 
-                // Shoot in the direction of the joystick
+                // Shoot in the direction
                 player.shoot(direction);
-                System.out.println(direction);
+
 
                 // Call reloadRunnable after shooting a bullet
                 reloadHandler.removeCallbacks(reloadRunnable);
                 reloadHandler.post(reloadRunnable);
             }
         });
-
-
 
         // Initialize the GameView and Enemy instances
         screenWidth = getResources().getDisplayMetrics().widthPixels;
@@ -200,6 +197,11 @@ private Runnable reloadRunnable = new Runnable() {
             enemyThread.start();
         }
         player = new Player(screenWidth / 2, screenHeight / 2, 50, screenWidth, screenHeight);
+
+        // Now that the Player object is initialized, you can call updateHealth
+        player.updateHealth();
+
+
         gameView = new GameView(this, player, enemy);
 
         // Set the size of the GameView
@@ -237,9 +239,11 @@ private Runnable reloadRunnable = new Runnable() {
 
                 // Update the player's position based on the joystick's direction
                 updatePlayerPosition(direction);
-                // Start the update loop
-                handler.removeCallbacks(runnable);
-                handler.post(runnable);
+                // Start the update loop only if the activity is visible
+                if (isActivityVisible) {
+                    handler.removeCallbacks(runnable);
+                    handler.post(runnable);
+                }
             }
         });
     }
@@ -247,11 +251,15 @@ private Runnable reloadRunnable = new Runnable() {
 
     private void handleGameOver() {
         // Stop the update loop
+        handler.removeCallbacks(collisionRunnable);
         handler.removeCallbacks(runnable);
+        handler.removeCallbacks(bulletCollisionRunnable);
 
-        // Navigate to a game over screen or show a game over dialog
-        // This is just an example, replace with your own game over handling logic
+
+
+        // Start the end game activity
         Intent intent = new Intent(MainActivity.this, LeaderboardActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK); // remove back stack
         startActivity(intent);
         finish();
     }
@@ -275,7 +283,8 @@ private Runnable reloadRunnable = new Runnable() {
         // Implement your collision detection logic here
         // This is a simple example using circular collision detection
         float distance = (float) Math.sqrt(Math.pow(player.getX() - enemy.getX(), 2) + Math.pow(player.getY() - enemy.getY(), 2));
-        return distance < (player.getRadius() + enemy.getRadius());
+
+        return distance-50 < (player.getRadius() + enemy.getRadius());
     }
     private void vibrate() {
         Vibrator v = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
@@ -290,12 +299,24 @@ private Runnable reloadRunnable = new Runnable() {
         }
     }
     @Override
+    protected void onResume() {
+        super.onResume();
+        isActivityVisible = true;
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        isActivityVisible = false;
+    }
+    @Override
     protected void onDestroy() {
         super.onDestroy();
 
         // Stop the update loop when the activity is destroyed
         handler.removeCallbacks(runnable);
         reloadHandler.removeCallbacks(reloadRunnable);
+
 
         // Shutdown the executorService when the activity is destroyed
         executorService.shutdown();

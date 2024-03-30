@@ -31,7 +31,7 @@ public class Player {
     private ScheduledExecutorService scheduler;
 
     private BlockingQueue<Integer> damageQueue = new LinkedBlockingQueue<>();
-    private int health = 100; // Initial health
+    private int health = 10; // Initial health
 
 
     public Player(float x, float y, float radius, float screenWidth, float screenHeight) {
@@ -49,6 +49,7 @@ public class Player {
         // This is the producer
         try {
             damageQueue.put(damage);
+            Thread.sleep(1000); // Simulate some processing time
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
         }
@@ -59,8 +60,14 @@ public class Player {
         new Thread(() -> {
             while (true) {
                 try {
+                    if (damageQueue.isEmpty()) {
+                        Thread.sleep(1000); // Wait for 1 second if no damage is available
+                        continue;
+                    }
                     int damage = damageQueue.take();
                     health -= damage;
+
+
                     if (health <= 0) {
                         // Player is dead, handle game over
                         break;

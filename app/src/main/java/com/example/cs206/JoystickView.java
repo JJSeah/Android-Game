@@ -39,6 +39,12 @@ public class JoystickView extends View {
         circlePaint.setStrokeCap(Paint.Cap.ROUND);
         circlePaint.setStrokeWidth(8);
     }
+    @Override
+    protected void onDetachedFromWindow() {
+        super.onDetachedFromWindow();
+        // Remove the joystickRunnable from the handler
+        handler.removeCallbacks(joystickRunnable);
+    }
 
     @Override
     protected void onSizeChanged(int w, int h, int oldw, int oldh) {
@@ -67,13 +73,6 @@ public class JoystickView extends View {
         // Draw the inner circle of the joystick
         circlePaint.setColor(Color.parseColor("#A9A9A9"));
         canvas.drawCircle(xPosition, yPosition, 50, circlePaint);
-
-//        // Draw the buttons of the retro controller
-//        circlePaint.setColor(Color.RED);
-//        canvas.drawCircle(center_x - 150, center_y, 30, circlePaint);
-//        canvas.drawCircle(center_x - 150, center_y - 70, 30, circlePaint);
-//        canvas.drawCircle(center_x - 150, center_y + 70, 30, circlePaint);
-//        canvas.drawCircle(center_x - 220, center_y, 30, circlePaint);
     }
 
     @Override

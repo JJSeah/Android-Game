@@ -72,9 +72,6 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
 
         // Draw the enemy
         enemy.update();
-        if (enemy.checkCollision(player)) {
-            enemy.decreaseHealth(10);
-        }
         enemy.draw(canvas, paint);
         enemy.drawHealthBar(canvas, paint);
 
