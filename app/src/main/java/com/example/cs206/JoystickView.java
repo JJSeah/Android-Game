@@ -4,6 +4,7 @@ import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.os.Handler;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
@@ -14,6 +15,18 @@ public class JoystickView extends View {
     private float center_x, center_y;
     private Paint circlePaint;
     private JoystickListener joystickListener;
+    private boolean isJoystickHeld = false;
+    private Handler handler = new Handler();
+    private Runnable joystickRunnable = new Runnable() {
+        @Override
+        public void run() {
+            if (isJoystickHeld && joystickListener != null) {
+                joystickListener.onJoystickHold(getNormalizedX(), getNormalizedY());
+            }
+            handler.postDelayed(this, 100); // Adjust the delay as needed
+        }
+    };
+
 
     public JoystickView(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -87,6 +100,8 @@ public class JoystickView extends View {
                 if (joystickListener != null) {
                     joystickListener.onJoystickMoved((xPosition - center_x) / center_x, (center_y - yPosition) / center_y);
                 }
+                isJoystickHeld = true;
+                handler.post(joystickRunnable);
                 break;
 
             case MotionEvent.ACTION_UP:
@@ -97,6 +112,8 @@ public class JoystickView extends View {
                 if (joystickListener != null) {
                     joystickListener.onJoystickReleased();
                 }
+                isJoystickHeld = false;
+                handler.removeCallbacks(joystickRunnable);
                 break;
         }
 

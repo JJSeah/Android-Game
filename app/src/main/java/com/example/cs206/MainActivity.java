@@ -86,7 +86,6 @@ private Runnable reloadRunnable = new Runnable() {
         // Update the reload progress bar
         int reloadProgress = player.getReloadProgress();
         reloadProgressBar.setProgress(reloadProgress);
-        System.out.println("Reload progress: " + reloadProgress);
 
         // Schedule the next update
         reloadHandler.postDelayed(this, 100);
@@ -176,10 +175,12 @@ private Runnable reloadRunnable = new Runnable() {
                 float joystickY = joystick.getNormalizedY();
 
                 // Calculate the direction based on the joystick's position
-                float direction = (float) Math.atan2(joystickY - player.getY(), joystickX - player.getX());
+//                float direction = (float) Math.atan2(joystickY - player.getY(), joystickX - player.getX());
+                float direction = (float) -Math.PI / 2; // -90 degrees in radians
 
                 // Shoot in the direction of the joystick
                 player.shoot(direction);
+                System.out.println(direction);
 
                 // Call reloadRunnable after shooting a bullet
                 reloadHandler.removeCallbacks(reloadRunnable);
@@ -236,6 +237,9 @@ private Runnable reloadRunnable = new Runnable() {
 
                 // Update the player's position based on the joystick's direction
                 updatePlayerPosition(direction);
+                // Start the update loop
+                handler.removeCallbacks(runnable);
+                handler.post(runnable);
             }
         });
     }
@@ -256,11 +260,11 @@ private Runnable reloadRunnable = new Runnable() {
     }
     private void updatePlayerPosition(float direction) {
         // Calculate the new position based on the joystick's direction
-        float newXPosition = player.getX() + (float) Math.cos(direction) * 20; // Increase the multiplier to increase the speed
-        float newYPosition = player.getY() - (float) Math.sin(direction) * 20; // Increase the multiplier to increase the speed
+        float newXPosition = player.getX() + (float) Math.cos(direction) * 2; // Increase the multiplier to increase the speed
+        float newYPosition = player.getY() - (float) Math.sin(direction) * 2; // Increase the multiplier to increase the speed
 
         // Check if the new position is within the screen bounds
-        if (newXPosition - player.getRadius() >= 0 && newXPosition + player.getRadius() <= screenWidth) {
+        if (newXPosition - player.getRadius() >= 0 && newXPosition + player.getRadius() <= screenWidth * 0.99) {
             player.setX(newXPosition);
         }
         if (newYPosition - player.getRadius() >= 0 && newYPosition + player.getRadius() <= screenHeight * 0.75){

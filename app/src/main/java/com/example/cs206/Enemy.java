@@ -43,10 +43,10 @@ public class Enemy {
         y += speedY * timeDelta;
 
         // Check for boundary and reverse direction if necessary
-        if (x < 0 || x > screenWidth) {
+        if (x < 0 || x > screenWidth * 0.95) {
             speedX = -speedX;
         }
-        if (y < 0 || y > screenHeight * 0.75) { // Limit the enemy's y position to 3/4 of the screen height
+        if (y < 0 || y > screenHeight * 0.70) { // Limit the enemy's y position to 3/4 of the screen height
             speedY = -speedY;
         }
 
