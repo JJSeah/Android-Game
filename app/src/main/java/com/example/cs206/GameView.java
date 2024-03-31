@@ -19,6 +19,8 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
 
     private CountDownTimer countDownTimer;
     private long timeLeftInMillis;
+    private volatile boolean isSurfaceActive;
+
 
 
     public GameView(Context context, Player player, Enemy enemy) {
@@ -46,8 +48,9 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
 
     @Override
     public void surfaceCreated(SurfaceHolder holder) {
+        isSurfaceActive = true; // Set to true when the SurfaceView is created
         new Thread(() -> {
-            while (true) {
+            while (isSurfaceActive) { // Check this field in your loop
                 if (!holder.getSurface().isValid()) {
                     continue;
                 }
@@ -91,6 +94,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
 
     @Override
     public void surfaceDestroyed(@NonNull SurfaceHolder surfaceHolder) {
+        isSurfaceActive = false; // Set to false when the SurfaceView is destroyed
 
     }
 

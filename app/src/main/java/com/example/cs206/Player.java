@@ -60,10 +60,6 @@ public class Player {
         new Thread(() -> {
             while (true) {
                 try {
-                    if (damageQueue.isEmpty()) {
-                        Thread.sleep(1000); // Wait for 1 second if no damage is available
-                        continue;
-                    }
                     int damage = damageQueue.take();
                     health -= damage;
 

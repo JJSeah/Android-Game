@@ -102,6 +102,7 @@ private Runnable reloadRunnable = new Runnable() {
                 System.out.println("Collision detected!");
                 player.takeDamage(10); // Assume the player takes 10 damage when colliding with an enemy
                 if (player.getHealth() <= 0) {
+//                    player.setHealth(0); // Set the player's health to 0
                     handleGameOver();
                 }
             }
@@ -130,7 +131,7 @@ private Runnable reloadRunnable = new Runnable() {
                 updateScore(); // Update the score display=
                 // Player is dead, handle game over
                 handleGameOver();
-//            dbHelper.insertScore(score); // Save the score to the database
+            dbHelper.insertScore(score); // Save the score to the database
             } else {
                 // Redraw the GameView
                 gameView.invalidate();
@@ -251,13 +252,33 @@ private Runnable reloadRunnable = new Runnable() {
 
     private void handleGameOver() {
         // Stop the update loop
-        handler.removeCallbacks(collisionRunnable);
-        handler.removeCallbacks(runnable);
-        handler.removeCallbacks(bulletCollisionRunnable);
+        if (handler != null) {
+            handler.removeCallbacks(collisionRunnable);
+            handler.removeCallbacks(runnable);
+            handler.removeCallbacks(bulletCollisionRunnable);
+        }
 
+        if (reloadHandler != null) {
+            reloadHandler.removeCallbacks(reloadRunnable);
+        }
 
+        // Shutdown the executorService
+        if (executorService != null && !executorService.isShutdown()) {
+            executorService.shutdown();
+        }
+
+        // Stop the music
+        if (mediaPlayer != null && mediaPlayer.isPlaying()) {
+            mediaPlayer.stop();
+            mediaPlayer.release();
+            mediaPlayer = null;
+        }
 
         // Start the end game activity
+        startLeaderboardActivity();
+    }
+
+    private void startLeaderboardActivity() {
         Intent intent = new Intent(MainActivity.this, LeaderboardActivity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK); // remove back stack
         startActivity(intent);
@@ -317,7 +338,6 @@ private Runnable reloadRunnable = new Runnable() {
         handler.removeCallbacks(runnable);
         reloadHandler.removeCallbacks(reloadRunnable);
 
-
         // Shutdown the executorService when the activity is destroyed
         executorService.shutdown();
 
@@ -327,6 +347,5 @@ private Runnable reloadRunnable = new Runnable() {
             mediaPlayer.release();
             mediaPlayer = null;
         }
-
     }
 }
