@@ -10,7 +10,8 @@ import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 
 import androidx.annotation.NonNull;
-
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 public class GameView extends SurfaceView implements SurfaceHolder.Callback {
     private Player player;
     private Enemy enemy;
@@ -20,6 +21,8 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
     private CountDownTimer countDownTimer;
     private long timeLeftInMillis;
     private volatile boolean isSurfaceActive;
+    private Bitmap background;
+
 
 
 
@@ -29,6 +32,9 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
         this.player = player;
         this.enemy = enemy; // Initialize the enemy here
         paint = new Paint();
+
+        background = BitmapFactory.decodeResource(getResources(), R.drawable.sg);
+        background = Bitmap.createScaledBitmap(background, 1080, 1920, false);
 
         // Initialize the CountDownTimer
         countDownTimer = new CountDownTimer(60000, 1000) { // 60 seconds timer
@@ -69,8 +75,10 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
     protected void onDraw(Canvas canvas) {
         // Clear the canvas
         Paint paint = new Paint();
-        paint.setColor(Color.WHITE); // Change this to your background color
-        canvas.drawRect(0, 0, getWidth(), getHeight(), paint);
+        canvas.drawBitmap(background, 0, 0, null);
+
+//        paint.setColor(Color.WHITE); // Change this to your background color
+//        canvas.drawRect(0, 0, getWidth(), getHeight(), paint);
         player.draw(canvas, paint);
 
         // Draw the enemy
