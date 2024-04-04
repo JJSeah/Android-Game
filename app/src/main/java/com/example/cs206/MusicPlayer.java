@@ -46,7 +46,7 @@ public class MusicPlayer {
 
         try {
             thread.join();
-            Log.d("TAG", "Stopped music");
+            Log.d("TAG", "Stopped music and killed thread");
         } catch (InterruptedException e) {
             Log.d("TAG", "Error stopping music");
         }

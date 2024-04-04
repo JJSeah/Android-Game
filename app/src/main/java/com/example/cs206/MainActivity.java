@@ -53,8 +53,6 @@ public class MainActivity extends AppCompatActivity {
     private boolean isActivityVisible;
     private boolean isCollisionRunnableRunning = false;
 
-
-
     private Runnable bulletCollisionRunnable = new Runnable() {
         @Override
         public void run() {
