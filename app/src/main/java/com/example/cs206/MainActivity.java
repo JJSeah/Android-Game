@@ -154,7 +154,7 @@ private Runnable reloadRunnable = new Runnable() {
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         dbHelper = new DatabaseHelper(this); // Initialize the DatabaseHelper
 
-        // Initialize the MediaPlayer with the music file
+        // Initialize the MusicPlayer to play music
         musicPlayer = new MusicPlayer(this);
         musicPlayer.playMusic();
 
@@ -169,8 +169,6 @@ private Runnable reloadRunnable = new Runnable() {
         JoystickView joystick = (JoystickView) findViewById(R.id.joystickView);
         scoreTextView = (TextView) findViewById(R.id.scoreTextView);
         updateScore();
-
-
 
         shootButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -322,17 +320,22 @@ private Runnable reloadRunnable = new Runnable() {
     @Override
     protected void onResume() {
         super.onResume();
+        musicPlayer.resumeMusic();
         isActivityVisible = true;
     }
 
     @Override
     protected void onPause() {
         super.onPause();
+        musicPlayer.pauseMusic();
         isActivityVisible = false;
     }
     @Override
     protected void onDestroy() {
         super.onDestroy();
+
+        // Stop the music when the activity is destroyed
+        musicPlayer.stopMusic();
 
         // Stop the update loop when the activity is destroyed
         handler.removeCallbacks(runnable);
@@ -340,8 +343,5 @@ private Runnable reloadRunnable = new Runnable() {
 
         // Shutdown the executorService when the activity is destroyed
         executorService.shutdown();
-
-        // Stop the music when the activity is destroyed
-        musicPlayer.stopMusic();
     }
 }
