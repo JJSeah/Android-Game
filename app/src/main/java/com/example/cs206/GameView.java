@@ -6,6 +6,7 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.os.CountDownTimer;
+import android.util.DisplayMetrics;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 
@@ -33,8 +34,17 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
         this.enemy = enemy; // Initialize the enemy here
         paint = new Paint();
 
-        background = BitmapFactory.decodeResource(getResources(), R.drawable.sg);
-        background = Bitmap.createScaledBitmap(background, 1080, 1920, false);
+//        background = BitmapFactory.decodeResource(getResources(), R.drawable.sg);
+//        background = Bitmap.createScaledBitmap(background, 1080, 1920, false);
+
+        // Get the size of the screen
+        DisplayMetrics metrics = context.getResources().getDisplayMetrics();
+        int screenWidth = metrics.widthPixels;
+        int screenHeight = metrics.heightPixels;
+
+        // Load and scale the background to fit the screen
+        Bitmap originalBackground = BitmapFactory.decodeResource(getResources(), R.drawable.sg);
+        background = Bitmap.createScaledBitmap(originalBackground, screenWidth, screenHeight - 700, false);
 
         // Initialize the CountDownTimer
         countDownTimer = new CountDownTimer(60000, 1000) { // 60 seconds timer
