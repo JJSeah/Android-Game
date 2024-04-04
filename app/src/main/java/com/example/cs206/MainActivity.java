@@ -112,7 +112,7 @@ private Runnable reloadRunnable = new Runnable() {
         @Override
         public void run() {
             // Update the enemy's position
-            enemy.update();
+//            enemy.update();
             if (!isCollisionRunnableRunning) {
                 isCollisionRunnableRunning = true;
                 new Thread(collisionRunnable).start();
@@ -189,11 +189,11 @@ private Runnable reloadRunnable = new Runnable() {
         screenHeight = getResources().getDisplayMetrics().heightPixels;
         // Only create a new Enemy if one doesn't already exist
         if (enemy == null) {
-            enemy = new Enemy(0, 0, 5, 5, screenWidth, screenHeight);
+            enemy = new Enemy(0, 0, 5, 5, screenWidth, screenHeight, getResources());
             EnemyThread enemyThread = new EnemyThread(enemy);
             enemyThread.start();
         }
-        player = new Player(screenWidth / 2, screenHeight / 2, 50, screenWidth, screenHeight);
+        player = new Player(screenWidth / 2, screenHeight / 2, 50, screenWidth, screenHeight, getResources());
 
         // Now that the Player object is initialized, you can call updateHealth
         player.updateHealth();
@@ -327,13 +327,22 @@ private Runnable reloadRunnable = new Runnable() {
         super.onPause();
         musicPlayer.pauseMusic();
         isActivityVisible = false;
+
+        // Stop the music when the activity is paused
+        musicPlayer.stopMusic();
     }
     @Override
     protected void onDestroy() {
         super.onDestroy();
 
+<<<<<<< Updated upstream
         // Stop the music when the activity is destroyed
         musicPlayer.stopMusic();
+=======
+        if (gameView != null) {
+            gameView.surfaceDestroyed(gameView.getHolder());
+        }
+>>>>>>> Stashed changes
 
         // Stop the update loop when the activity is destroyed
         handler.removeCallbacks(runnable);

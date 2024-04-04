@@ -1,5 +1,6 @@
 package com.example.cs206;
 
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Executors;
@@ -7,6 +8,9 @@ import java.util.concurrent.Future;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
+import android.content.res.Resources;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
@@ -31,10 +35,12 @@ public class Player {
     private ScheduledExecutorService scheduler;
 
     private BlockingQueue<Integer> damageQueue = new LinkedBlockingQueue<>();
-    private int health = 10; // Initial health
+    private Bitmap playerImage;
+
+    private int health = 100; // Initial health
 
 
-    public Player(float x, float y, float radius, float screenWidth, float screenHeight) {
+    public Player(float x, float y, float radius, float screenWidth, float screenHeight,  Resources res) {
         this.x = x;
         this.y = y;
         this.radius = radius;
@@ -44,6 +50,9 @@ public class Player {
         this.bullets = new ArrayList<>();
         this.scheduler = Executors.newScheduledThreadPool(1);
 
+        // Load the player image
+        playerImage = BitmapFactory.decodeResource(res, R.drawable.jet);
+        playerImage = Bitmap.createScaledBitmap(playerImage, (int) (2 * radius), (int) (2 * radius), false);
     }
     public void takeDamage(int damage) {
         // This is the producer
@@ -82,8 +91,8 @@ public class Player {
         } else {
             paint.setColor(Color.RED);
         }
-        canvas.drawCircle(x, y, radius, paint);
-
+//        canvas.drawCircle(x, y, radius, paint);
+        canvas.drawBitmap(playerImage, x - radius, y - radius, paint);
         // Draw all the bullets
         for (Bullet bullet : bullets) {
             bullet.update();

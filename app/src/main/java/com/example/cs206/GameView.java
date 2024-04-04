@@ -44,7 +44,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
 
         // Load and scale the background to fit the screen
         Bitmap originalBackground = BitmapFactory.decodeResource(getResources(), R.drawable.sg);
-        background = Bitmap.createScaledBitmap(originalBackground, screenWidth, screenHeight - 700, false);
+        background = Bitmap.createScaledBitmap(originalBackground, screenWidth,  (int)(screenHeight*0.75), false);
 
         // Initialize the CountDownTimer
         countDownTimer = new CountDownTimer(60000, 1000) { // 60 seconds timer
@@ -92,7 +92,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
         player.draw(canvas, paint);
 
         // Draw the enemy
-        enemy.update();
+//        enemy.update();
         enemy.draw(canvas, paint);
         enemy.drawHealthBar(canvas, paint);
 

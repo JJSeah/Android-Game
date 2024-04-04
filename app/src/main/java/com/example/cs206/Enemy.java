@@ -1,5 +1,8 @@
 package com.example.cs206;
 
+import android.content.res.Resources;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.LinearGradient;
@@ -16,10 +19,11 @@ public class Enemy {
     private int health = 100; // Initial health
     private long lastUpdateTime;
     private Paint paint; // Used for drawing the enemy
+    private Bitmap enemyImage;
 
 
 
-    public Enemy(float x, float y, float speedX, float speedY, float screenWidth, float screenHeight) {
+    public Enemy(float x, float y, float speedX, float speedY, float screenWidth, float screenHeight, Resources res) {
         this.x = x;
         this.y = y;
         this.speedX = speedX *20;
@@ -33,6 +37,9 @@ public class Enemy {
         paint.setColor(Color.RED); // Set the color to red
         paint.setShader(new LinearGradient(0, 0, 100, 100, Color.RED, Color.BLUE, Shader.TileMode.MIRROR)); // Set a gradient shader
 
+        // Load the enemy image
+        enemyImage = BitmapFactory.decodeResource(res, R.drawable.game);
+        enemyImage = Bitmap.createScaledBitmap(enemyImage, 100, 100, false); // Assuming the enemy size is 100x100
     }
 
     public void update() {
@@ -55,8 +62,11 @@ public class Enemy {
 
     public void draw(Canvas canvas, Paint paint) {
 //        paint.setColor(Color.RED);
-        canvas.drawRect(x, y, x + 50, y + 50, paint);
+//        canvas.drawRect(x, y, x + 50, y + 50, paint);
+        // Draw the enemy image instead of a rectangle
+        canvas.drawBitmap(enemyImage, x, y, null);
     }
+
 
     public void decreaseHealth(int amount) {
         health -= amount;
