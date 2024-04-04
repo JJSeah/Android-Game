@@ -40,6 +40,7 @@ public class MainActivity extends AppCompatActivity {
     private int score = 0; // Add this line
     private TextView scoreTextView; // Add this line
     private GameView gameView;
+    private MusicPlayer musicPlayer;
     private Enemy enemy;
     private Player player;
     private float screenWidth;
@@ -142,7 +143,6 @@ private Runnable reloadRunnable = new Runnable() {
         }
     };
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -155,15 +155,15 @@ private Runnable reloadRunnable = new Runnable() {
         dbHelper = new DatabaseHelper(this); // Initialize the DatabaseHelper
 
         // Initialize the MediaPlayer with the music file
-        mediaPlayer = MediaPlayer.create(this, R.raw.game_music);
-        mediaPlayer.setLooping(true); // Set looping
-        mediaPlayer.start(); // Start the music
+        musicPlayer = new MusicPlayer(this);
+        musicPlayer.playMusic();
 
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
+
         reloadProgressBar = findViewById(R.id.reloadProgressBar);
         shootButton = (Button) findViewById(R.id.Y);
         JoystickView joystick = (JoystickView) findViewById(R.id.joystickView);
@@ -342,10 +342,6 @@ private Runnable reloadRunnable = new Runnable() {
         executorService.shutdown();
 
         // Stop the music when the activity is destroyed
-        if (mediaPlayer != null) {
-            mediaPlayer.stop();
-            mediaPlayer.release();
-            mediaPlayer = null;
-        }
+        musicPlayer.stopMusic();
     }
 }
