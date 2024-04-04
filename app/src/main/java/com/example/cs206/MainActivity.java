@@ -334,15 +334,14 @@ private Runnable reloadRunnable = new Runnable() {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-
-<<<<<<< Updated upstream
+        
         // Stop the music when the activity is destroyed
         musicPlayer.stopMusic();
-=======
+
         if (gameView != null) {
             gameView.surfaceDestroyed(gameView.getHolder());
         }
->>>>>>> Stashed changes
+
 
         // Stop the update loop when the activity is destroyed
         handler.removeCallbacks(runnable);
