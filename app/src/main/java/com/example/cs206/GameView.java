@@ -101,7 +101,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
     }
 
     public long getTimeLeftInMillis() {
-        return timeLeftInMillis / 1000;
+        return (timeLeftInMillis / 1000);
     }
 
     @Override

@@ -76,17 +76,26 @@ public class Enemy {
         }
     }
 
-    public void drawHealthBar(Canvas canvas, Paint paint) {
-        if (health <= 30) {
-            paint.setColor(Color.RED);
-        } else if (health <= 70) {
-            paint.setColor(Color.YELLOW);
-        } else if (health <= 100) {
-            paint.setColor(Color.GREEN);
-        }
-        canvas.drawRect(x, y - 20, x + health, y - 10, paint);
+public void drawHealthBar(Canvas canvas, Paint paint) {
+    int startColor;
+    int endColor;
 
+    if (health <= 30) {
+        startColor = Color.RED;
+        endColor = Color.YELLOW;
+    } else if (health <= 70) {
+        startColor = Color.YELLOW;
+        endColor = Color.GREEN;
+    } else {
+        startColor = Color.GREEN;
+        endColor = Color.BLUE;
     }
+
+    Shader shader = new LinearGradient(x, y - 20, x + health, y - 10, startColor, endColor, Shader.TileMode.CLAMP);
+    paint.setShader(shader);
+
+    canvas.drawRect(x, y - 20, x + health, y - 10, paint);
+}
 
     public boolean checkCollision(Player player) {
         float distance = (float) Math.sqrt(Math.pow(player.getX() - x, 2) + Math.pow(player.getY() - y, 2));

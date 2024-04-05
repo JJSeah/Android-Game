@@ -54,27 +54,26 @@ public class MainActivity extends AppCompatActivity {
     private Runnable bulletCollisionRunnable = new Runnable() {
         @Override
         public void run() {
-            // Loop through each bullet in the player's bullet list
-            for (Iterator<Bullet> iterator = player.getBullets().iterator(); iterator.hasNext();) {
+            // Use an Iterator to safely remove items during iteration
+            Iterator<Bullet> iterator = player.getBullets().iterator();
+            while (iterator.hasNext()) {
                 Bullet bullet = iterator.next();
-                // Move the bullet and check for collisions
                 bullet.move();
                 boolean collidesWithEnemy = bullet.collidesWith(enemy);
                 if (collidesWithEnemy || bullet.collidesWithWall(screenWidth, screenHeight)) {
-                    iterator.remove();
+                    iterator.remove(); // Safe removal during iteration
                     if (collidesWithEnemy){
-                        score++; // Increment the score
+                        score++;
                         runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
-                                updateScore(); // Update the score display
+                                updateScore();
                             }
                         });
                         vibrate();
                     }
                 }
             }
-            // Schedule the next update
             handler.postDelayed(this, 100);
         }
     };

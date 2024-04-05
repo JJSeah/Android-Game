@@ -25,18 +25,13 @@ public class LeaderboardActivity extends AppCompatActivity {
         dbHelper = new DatabaseHelper(this);
         leaderboardTable = findViewById(R.id.leaderboard_table);
 
-        List<Integer> topScores = dbHelper.getTopScores();
         List<Long> timeSpentList = dbHelper.getTimeSpentList();
 
-        for (int i = 0; i < topScores.size(); i++) {
+        for (int i = 0; i < timeSpentList.size(); i++) {
             TableRow row = new TableRow(this);
-            TextView scoreView = new TextView(this);
             TextView timeView = new TextView(this);
 
-            scoreView.setText(String.valueOf(topScores.get(i)));
             timeView.setText(String.valueOf(timeSpentList.get(i)));
-
-            row.addView(scoreView);
             row.addView(timeView);
 
             leaderboardTable.addView(row);
