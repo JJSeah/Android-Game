@@ -30,8 +30,6 @@ import android.media.MediaPlayer;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 
-
-
 public class MainActivity extends AppCompatActivity {
     ImageView avatar;
     private Handler handler = new Handler();
@@ -102,7 +100,6 @@ private Runnable reloadRunnable = new Runnable() {
                 System.out.println("Collision detected!");
                 player.takeDamage(10); // Assume the player takes 10 damage when colliding with an enemy
                 if (player.getHealth() <= 0) {
-//                    player.setHealth(0); // Set the player's health to 0
                     handleGameOver();
                 }
             }
@@ -127,11 +124,11 @@ private Runnable reloadRunnable = new Runnable() {
 
             // Check if the enemy's health is 0
             if (enemy.getHealth() <= 0) {
-                score++; // Increment the score
                 updateScore(); // Update the score display=
                 // Player is dead, handle game over
                 handleGameOver();
-            dbHelper.insertScore(score); // Save the score to the database
+            dbHelper.insertDatabase(gameView.getTimeLeftInMillis(),score);
+//            dbHelper.insertScore(score); // Save the score to the database
             } else {
                 // Redraw the GameView
                 gameView.invalidate();
@@ -271,6 +268,10 @@ private Runnable reloadRunnable = new Runnable() {
             mediaPlayer = null;
         }
 
+        if (gameView != null) {
+            gameView.surfaceDestroyed(gameView.getHolder());
+        }
+
         // Start the end game activity
         startLeaderboardActivity();
     }
@@ -333,7 +334,10 @@ private Runnable reloadRunnable = new Runnable() {
         musicPlayer.stopMusic();
 
         // Stop the update loop when the activity is paused
+
         handler.removeCallbacks(runnable);
+        handler.removeCallbacks(bulletCollisionRunnable);
+        handler.removeCallbacks(collisionRunnable);
         reloadHandler.removeCallbacks(reloadRunnable);
 
         // Shutdown the executorService when the activity is paused
@@ -342,6 +346,7 @@ private Runnable reloadRunnable = new Runnable() {
         if (gameView != null) {
             gameView.surfaceDestroyed(gameView.getHolder());
         }
+    }
     }
 
     @Override
@@ -369,13 +374,15 @@ private Runnable reloadRunnable = new Runnable() {
 
         // Stop the update loop when the activity is destroyed
         handler.removeCallbacks(runnable);
+        handler.removeCallbacks(bulletCollisionRunnable);
+        handler.removeCallbacks(collisionRunnable);
         reloadHandler.removeCallbacks(reloadRunnable);
 
         // Shutdown the executorService when the activity is destroyed
         executorService.shutdown();
-
         if (gameView != null) {
             gameView.surfaceDestroyed(gameView.getHolder());
         }
+
     }
 }

@@ -4,12 +4,12 @@
     android:layout_height="match_parent"
     tools:context=".LeaderboardActivity">
 
-    <ListView
-        android:id="@+id/listView"
+    <TableLayout
+        android:id="@+id/leaderboard_table"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_above="@+id/btn_restart"
-        android:layout_marginBottom="16dp" />
+        android:layout_height="wrap_content"
+        android:stretchColumns="*">
+    </TableLayout>
 
     <Button
         android:id="@+id/btn_restart"

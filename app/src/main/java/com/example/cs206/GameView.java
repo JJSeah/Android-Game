@@ -25,12 +25,13 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
     private Bitmap background;
     private Thread gameThread;
 
-
+    private Context context;
 
 
     public GameView(Context context, Player player, Enemy enemy) {
         super(context);
         getHolder().addCallback(this);
+        this.context = context;
         this.player = player;
         this.enemy = enemy; // Initialize the enemy here
         paint = new Paint();
@@ -51,9 +52,9 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
             }
 
             public void onFinish() {
-                // Start the end game activity
-//                Intent intent = new Intent(context, EndGameActivity.class);
-                Intent intent = new Intent(context, LeaderboardActivity.class);
+                //Start the end game activity
+//              Intent intent = new Intent(context, EndGameActivity.class);
+                Intent intent = new Intent(context, EndGameActivity.class);
                 intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK); // Add this line
                 context.startActivity(intent);
             }
@@ -99,6 +100,10 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
         canvas.drawText("Time left: " + timeLeftInMillis / 1000, 10, 50, paint);
     }
 
+    public long getTimeLeftInMillis() {
+        return timeLeftInMillis / 1000;
+    }
+
     @Override
     public void surfaceChanged(@NonNull SurfaceHolder surfaceHolder, int i, int i1, int i2) {
 
@@ -106,7 +111,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
 
     @Override
     public void surfaceDestroyed(@NonNull SurfaceHolder surfaceHolder) {
-        isSurfaceActive = false;
+        isSurfaceActive = false;// Set to false when the SurfaceView is destroyed
         try {
             gameThread.join();
         } catch (InterruptedException e) {
@@ -123,8 +128,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
     }
 
     public void stop() {
-        // Add code here to stop the game
+        // Add code here to stop the game}
     }
-
 
 }
