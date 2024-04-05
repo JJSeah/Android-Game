@@ -59,9 +59,10 @@ public class MainActivity extends AppCompatActivity {
                 Bullet bullet = iterator.next();
                 // Move the bullet and check for collisions
                 bullet.move();
-                if (bullet.collidesWith(enemy) || bullet.collidesWithWall(screenWidth, screenHeight)) {
+                boolean collidesWithEnemy = bullet.collidesWith(enemy);
+                if (collidesWithEnemy || bullet.collidesWithWall(screenWidth, screenHeight)) {
                     iterator.remove();
-                    if (bullet.collidesWith(enemy)){
+                    if (collidesWithEnemy){
                         score++; // Increment the score
                         runOnUiThread(new Runnable() {
                             @Override
@@ -333,8 +334,7 @@ private Runnable reloadRunnable = new Runnable() {
         musicPlayer.stopMusic();
 
         // Stop the update loop when the activity is paused
-        handler.removeCallbacks(runnable);
-        reloadHandler.removeCallbacks(reloadRunnable);
+
         handler.removeCallbacks(runnable);
         handler.removeCallbacks(bulletCollisionRunnable);
         handler.removeCallbacks(collisionRunnable);
@@ -347,6 +347,7 @@ private Runnable reloadRunnable = new Runnable() {
             gameView.surfaceDestroyed(gameView.getHolder());
         }
     }
+    }
 
     @Override
     protected void onStop() {
@@ -354,10 +355,6 @@ private Runnable reloadRunnable = new Runnable() {
 
         // Stop the update loop when the activity is stopped
         handler.removeCallbacks(runnable);
-        reloadHandler.removeCallbacks(reloadRunnable);
-        handler.removeCallbacks(runnable);
-        handler.removeCallbacks(bulletCollisionRunnable);
-        handler.removeCallbacks(collisionRunnable);
         reloadHandler.removeCallbacks(reloadRunnable);
 
         // Shutdown the executorService when the activity is stopped
@@ -371,14 +368,9 @@ private Runnable reloadRunnable = new Runnable() {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        
+
         // Stop the music when the activity is destroyed
         musicPlayer.stopMusic();
-
-        if (gameView != null) {
-            gameView.surfaceDestroyed(gameView.getHolder());
-        }
-
 
         // Stop the update loop when the activity is destroyed
         handler.removeCallbacks(runnable);
