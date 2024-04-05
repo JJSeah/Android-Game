@@ -9,6 +9,8 @@ import android.graphics.LinearGradient;
 import android.graphics.Paint;
 import android.graphics.Shader;
 
+import java.util.Random;
+
 public class Enemy {
     private float x;
     private float y;
@@ -46,6 +48,7 @@ public class Enemy {
         long currentTime = System.currentTimeMillis();
         float timeDelta = (currentTime - lastUpdateTime) / 1000f; // Calculate the time delta in seconds
 
+        // Update the enemy's position based on its speed
         x += speedX * timeDelta;
         y += speedY * timeDelta;
 
@@ -61,9 +64,7 @@ public class Enemy {
     }
 
     public void draw(Canvas canvas, Paint paint) {
-//        paint.setColor(Color.RED);
-//        canvas.drawRect(x, y, x + 50, y + 50, paint);
-        // Draw the enemy image instead of a rectangle
+        // Draw the enemy image at the enemy's position
         canvas.drawBitmap(enemyImage, x, y, null);
     }
 
@@ -76,7 +77,14 @@ public class Enemy {
     }
 
     public void drawHealthBar(Canvas canvas, Paint paint) {
-        paint.setColor(Color.GREEN);
+        System.out.println(health);
+        if (health <= 30) {
+            paint.setColor(Color.RED);
+        } else if (health <= 70) {
+            paint.setColor(Color.YELLOW);
+        } else if (health <= 100) {
+            paint.setColor(Color.GREEN);
+        }
         canvas.drawRect(x, y - 20, x + health, y - 10, paint);
 
     }

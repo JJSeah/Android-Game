@@ -61,9 +61,10 @@ public class MainActivity extends AppCompatActivity {
                 Bullet bullet = iterator.next();
                 // Move the bullet and check for collisions
                 bullet.move();
-                if (bullet.collidesWith(enemy) || bullet.collidesWithWall(screenWidth, screenHeight)) {
+                boolean collidesWithEnemy = bullet.collidesWith(enemy);
+                if (collidesWithEnemy || bullet.collidesWithWall(screenWidth, screenHeight)) {
                     iterator.remove();
-                    if (bullet.collidesWith(enemy)){
+                    if (collidesWithEnemy){
                         score++; // Increment the score
                         runOnUiThread(new Runnable() {
                             @Override
@@ -334,14 +335,13 @@ private Runnable reloadRunnable = new Runnable() {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        
+
         // Stop the music when the activity is destroyed
         musicPlayer.stopMusic();
 
         if (gameView != null) {
             gameView.surfaceDestroyed(gameView.getHolder());
         }
-
 
         // Stop the update loop when the activity is destroyed
         handler.removeCallbacks(runnable);
