@@ -7,6 +7,7 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.os.CountDownTimer;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 
@@ -54,10 +55,9 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
             }
 
             public void onFinish() {
-                // Start the end game activity
-//                Intent intent = new Intent(context, EndGameActivity.class);
-                Intent intent = new Intent(context, LeaderboardActivity.class);
-                intent.putExtra("timeLeftInMillis", timeLeftInMillis);
+                //Start the end game activity
+//              Intent intent = new Intent(context, EndGameActivity.class);
+                Intent intent = new Intent(context, EndGameActivity.class);
                 intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK); // Add this line
                 context.startActivity(intent);
             }
@@ -115,7 +115,11 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
     @Override
     public void surfaceDestroyed(@NonNull SurfaceHolder surfaceHolder) {
         isSurfaceActive = false; // Set to false when the SurfaceView is destroyed
-
+        Intent intent = new Intent(context, LeaderboardActivity.class);
+        Log.d("timeLeftInMillis", "hhh Time Left in Milliseconds: " + timeLeftInMillis);
+        intent.putExtra("timeLeftInMillis", timeLeftInMillis);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK); // Add this line
+        context.startActivity(intent);
     }
 
     public void pause() {
@@ -127,8 +131,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
     }
 
     public void stop() {
-        // Add code here to stop the game
+        // Add code here to stop the game}
     }
-
 
 }

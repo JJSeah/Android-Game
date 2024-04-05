@@ -5,6 +5,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.util.Log;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -17,7 +18,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     private static final String TABLE_PLAYER_SCORE = "player_score";
     private static final String COLUMN_ID = "id";
     private static final String COLUMN_SCORE = "score";
-    private static final String COLUMN_TIME_LEFT = "time_left";
+    private static final String COLUMN_TIME_SPENT = "time_left";
 
     public DatabaseHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
@@ -26,7 +27,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     @Override
     public void onCreate(SQLiteDatabase db) {
         String CREATE_PLAYER_SCORE_TABLE = "CREATE TABLE " + TABLE_PLAYER_SCORE + "("
-                + COLUMN_ID + " INTEGER PRIMARY KEY," + COLUMN_SCORE + " INTEGER," + COLUMN_TIME_LEFT + " INTEGER)";
+                + COLUMN_ID + " INTEGER PRIMARY KEY," + COLUMN_SCORE + " INTEGER," + COLUMN_TIME_SPENT + " INTEGER)";
         db.execSQL(CREATE_PLAYER_SCORE_TABLE);
     }
 
@@ -49,17 +50,19 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         db.close();
     }
 
-    public void insertTimeLeft(long timeLeftInMillis) {
+    public void insertTimeSpent(long timeSpentInMillis) {
         SQLiteDatabase db = this.getWritableDatabase();
 
         ContentValues values = new ContentValues();
-        values.put(COLUMN_TIME_LEFT, timeLeftInMillis);
+        values.put(COLUMN_TIME_SPENT, timeSpentInMillis);
 
         // Insert a new row
         db.insert(TABLE_PLAYER_SCORE, null, values);
 
         db.close();
     }
+
+
     // Method to get the top scores
     public List<Integer> getTopScores() {
         List<Integer> scores = new ArrayList<>();
@@ -74,17 +77,17 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return scores;
     }
 
-    public List<Long> getTimeLeftList() {
-        List<Long> timeLeftList = new ArrayList<>();
+    public List<Long> getTimeSpentList() {
+        List<Long> timeSpentList = new ArrayList<>();
         SQLiteDatabase db = this.getReadableDatabase();
 
-        Cursor cursor = db.query(TABLE_PLAYER_SCORE, new String[]{COLUMN_TIME_LEFT}, null, null, null, null, COLUMN_TIME_LEFT + " DESC", "10");
+        Cursor cursor = db.query(TABLE_PLAYER_SCORE, new String[]{COLUMN_TIME_SPENT}, null, null, null, null, COLUMN_TIME_SPENT + " DESC", "10");
         while (cursor.moveToNext()) {
-            timeLeftList.add(cursor.getLong(0));
+            timeSpentList.add(cursor.getLong(0));
         }
         cursor.close();
 
-        return timeLeftList;
+        return timeSpentList;
     }
 
 }

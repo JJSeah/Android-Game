@@ -8,6 +8,7 @@ import android.widget.Button;
 import android.widget.ListView;
 import androidx.appcompat.app.AppCompatActivity;
 import java.util.List;
+import android.util.Log;
 
 public class LeaderboardActivity extends AppCompatActivity {
     private DatabaseHelper dbHelper;
@@ -23,10 +24,13 @@ public class LeaderboardActivity extends AppCompatActivity {
         listView = findViewById(R.id.listView);
 
         long timeLeftInMillis = getIntent().getLongExtra("timeLeftInMillis", 0);
-        dbHelper.insertTimeLeft(60 - timeLeftInMillis);
+        long timeSpentInMillis = 60000 - timeLeftInMillis;
+        dbHelper.insertTimeSpent(timeSpentInMillis);
+        Log.d("TimeLeftInMillis", "Time Left in Milliseconds: " + timeLeftInMillis);
+        Log.d("TimeSpentInMillis", "Time Spent in Milliseconds: " + timeSpentInMillis);
 
-        List<Long> timeLeftlist = dbHelper.getTimeLeftList();
-        ArrayAdapter<Long> adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, timeLeftlist);
+        List<Long> timeSpentlist = dbHelper.getTimeSpentList();
+        ArrayAdapter<Long> adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, timeSpentlist);
 
         listView.setAdapter(adapter);
 
