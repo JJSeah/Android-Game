@@ -112,8 +112,10 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
     @Override
     public void surfaceDestroyed(@NonNull SurfaceHolder surfaceHolder) {
         isSurfaceActive = false;// Set to false when the SurfaceView is destroyed
+        countDownTimer.cancel(); // Stop the CountDownTimer
         try {
             gameThread.join();
+            System.out.println("Game thread stopped");
         } catch (InterruptedException e) {
             e.printStackTrace();
         }

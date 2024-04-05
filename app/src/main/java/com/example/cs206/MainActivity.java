@@ -50,6 +50,10 @@ public class MainActivity extends AppCompatActivity {
     private ScheduledExecutorService executorService = Executors.newScheduledThreadPool(5);
     private boolean isActivityVisible;
     private boolean isCollisionRunnableRunning = false;
+    private boolean isSurfaceViewActive = false;
+    private EnemyThread enemyThread; // Make enemyThread a member variable
+
+
 
     private Runnable bulletCollisionRunnable = new Runnable() {
         @Override
@@ -99,6 +103,7 @@ private Runnable reloadRunnable = new Runnable() {
                 System.out.println("Collision detected!");
                 player.takeDamage(10); // Assume the player takes 10 damage when colliding with an enemy
                 if (player.getHealth() <= 0) {
+                    enemyThread.interrupt();
                     handleGameOver();
                 }
             }
@@ -187,7 +192,7 @@ private Runnable reloadRunnable = new Runnable() {
         // Only create a new Enemy if one doesn't already exist
         if (enemy == null) {
             enemy = new Enemy(0, 0, 5, 5, screenWidth, screenHeight, getResources());
-            EnemyThread enemyThread = new EnemyThread(enemy);
+            enemyThread = new EnemyThread(enemy);
             enemyThread.start();
         }
         player = new Player(screenWidth / 2, screenHeight / 2, 50, screenWidth, screenHeight, getResources());
@@ -212,12 +217,13 @@ private Runnable reloadRunnable = new Runnable() {
                 // Calculate the direction based on the joystick's movement
                 float direction = (float) Math.atan2(yPercent, xPercent);
 
-                // Update the player's position based on the joystick's direction
-                updatePlayerPosition(direction);
 
-                // Start the update loop
-                handler.removeCallbacks(runnable);
-                handler.post(runnable);
+                if (isActivityVisible) {
+                    // Update the player's position based on the joystick's direction
+                    updatePlayerPosition(direction);
+                    handler.removeCallbacks(runnable);
+                    handler.post(runnable);
+                }
             }
 
             @Override
@@ -267,8 +273,9 @@ private Runnable reloadRunnable = new Runnable() {
             mediaPlayer = null;
         }
 
-        if (gameView != null) {
+        if (isSurfaceViewActive) {
             gameView.surfaceDestroyed(gameView.getHolder());
+            isSurfaceViewActive = false;
         }
 
         // Start the end game activity
@@ -342,8 +349,9 @@ private Runnable reloadRunnable = new Runnable() {
         // Shutdown the executorService when the activity is paused
         executorService.shutdownNow();
 
-        if (gameView != null) {
+        if (isSurfaceViewActive) {
             gameView.surfaceDestroyed(gameView.getHolder());
+            isSurfaceViewActive = false;
         }
     }
 
@@ -359,8 +367,9 @@ private Runnable reloadRunnable = new Runnable() {
         // Shutdown the executorService when the activity is stopped
         executorService.shutdownNow();
 
-        if (gameView != null) {
+        if (isSurfaceViewActive) {
             gameView.surfaceDestroyed(gameView.getHolder());
+            isSurfaceViewActive = false;
         }
     }
 
@@ -379,8 +388,9 @@ private Runnable reloadRunnable = new Runnable() {
 
         // Shutdown the executorService when the activity is destroyed
         executorService.shutdown();
-        if (gameView != null) {
+        if (isSurfaceViewActive) {
             gameView.surfaceDestroyed(gameView.getHolder());
+            isSurfaceViewActive = false;
         }
 
     }
