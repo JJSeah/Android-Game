@@ -7,7 +7,6 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.os.CountDownTimer;
 import android.util.DisplayMetrics;
-import android.util.Log;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 
@@ -107,6 +106,10 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
         invalidate();
     }
 
+    public long getTimeLeftInMillis() {
+        return timeLeftInMillis / 1000;
+    }
+
     @Override
     public void surfaceChanged(@NonNull SurfaceHolder surfaceHolder, int i, int i1, int i2) {
 
@@ -115,11 +118,6 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
     @Override
     public void surfaceDestroyed(@NonNull SurfaceHolder surfaceHolder) {
         isSurfaceActive = false; // Set to false when the SurfaceView is destroyed
-        Intent intent = new Intent(context, LeaderboardActivity.class);
-        Log.d("timeLeftInMillis", "hhh Time Left in Milliseconds: " + timeLeftInMillis);
-        intent.putExtra("timeLeftInMillis", timeLeftInMillis);
-        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK); // Add this line
-        context.startActivity(intent);
     }
 
     public void pause() {

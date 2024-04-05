@@ -62,6 +62,21 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         db.close();
     }
 
+public void insertDatabase(long timeLeftInMillis, int score) {
+    // Get a writable database
+    SQLiteDatabase db = this.getWritableDatabase();
+    System.out.println(score +"time"+ timeLeftInMillis);
+    // Create a new map of values, where column names are the keys
+    ContentValues values = new ContentValues();
+    values.put(COLUMN_TIME_SPENT, timeLeftInMillis);
+    values.put(COLUMN_SCORE, score);
+
+    // Insert a new row in the database
+    db.insert(TABLE_PLAYER_SCORE, null, values);
+
+    // Close the database connection
+    db.close();
+}
 
     // Method to get the top scores
     public List<Integer> getTopScores() {
@@ -89,5 +104,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
         return timeSpentList;
     }
+
+
 
 }

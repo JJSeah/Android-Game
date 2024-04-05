@@ -9,11 +9,13 @@ import android.widget.ListView;
 import androidx.appcompat.app.AppCompatActivity;
 import java.util.List;
 import android.util.Log;
+import android.widget.TableLayout;
+import android.widget.TableRow;
+import android.widget.TextView;
 
 public class LeaderboardActivity extends AppCompatActivity {
     private DatabaseHelper dbHelper;
-    private ListView listView;
-
+    private TableLayout leaderboardTable;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -21,25 +23,29 @@ public class LeaderboardActivity extends AppCompatActivity {
         setContentView(R.layout.activity_leaderboard);
 
         dbHelper = new DatabaseHelper(this);
-        listView = findViewById(R.id.listView);
+        leaderboardTable = findViewById(R.id.leaderboard_table);
 
-        long timeLeftInMillis = getIntent().getLongExtra("timeLeftInMillis", 0);
-        long timeSpentInMillis = 60000 - timeLeftInMillis;
-        dbHelper.insertTimeSpent(timeSpentInMillis);
-        Log.d("TimeLeftInMillis", "Time Left in Milliseconds: " + timeLeftInMillis);
-        Log.d("TimeSpentInMillis", "Time Spent in Milliseconds: " + timeSpentInMillis);
+        List<Integer> topScores = dbHelper.getTopScores();
+        List<Long> timeSpentList = dbHelper.getTimeSpentList();
 
-        List<Long> timeSpentlist = dbHelper.getTimeSpentList();
-        ArrayAdapter<Long> adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, timeSpentlist);
+        for (int i = 0; i < topScores.size(); i++) {
+            TableRow row = new TableRow(this);
+            TextView scoreView = new TextView(this);
+            TextView timeView = new TextView(this);
 
-        listView.setAdapter(adapter);
+            scoreView.setText(String.valueOf(topScores.get(i)));
+            timeView.setText(String.valueOf(timeSpentList.get(i)));
+
+            row.addView(scoreView);
+            row.addView(timeView);
+
+            leaderboardTable.addView(row);
+        }
 
         Button btnRestart = findViewById(R.id.btn_restart);
         btnRestart.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // Restart your game here
-                System.out.println("Restarting game...");
                 Intent intent = new Intent(LeaderboardActivity.this, MainActivity.class);
                 startActivity(intent);
                 finish();
