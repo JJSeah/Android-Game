@@ -22,8 +22,12 @@ public class LeaderboardActivity extends AppCompatActivity {
         dbHelper = new DatabaseHelper(this);
         listView = findViewById(R.id.listView);
 
-        List<Integer> scores = dbHelper.getTopScores();
-        ArrayAdapter<Integer> adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, scores);
+        long timeLeftInMillis = getIntent().getLongExtra("timeLeftInMillis", 0);
+        dbHelper.insertTimeLeft(60 - timeLeftInMillis);
+
+        List<Long> timeLeftlist = dbHelper.getTimeLeftList();
+        ArrayAdapter<Long> adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, timeLeftlist);
+
         listView.setAdapter(adapter);
 
         Button btnRestart = findViewById(R.id.btn_restart);

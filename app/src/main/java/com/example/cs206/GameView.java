@@ -24,12 +24,13 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
     private volatile boolean isSurfaceActive;
     private Bitmap background;
 
-
+    private Context context;
 
 
     public GameView(Context context, Player player, Enemy enemy) {
         super(context);
         getHolder().addCallback(this);
+        this.context = context;
         this.player = player;
         this.enemy = enemy; // Initialize the enemy here
         paint = new Paint();
@@ -56,6 +57,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
                 // Start the end game activity
 //                Intent intent = new Intent(context, EndGameActivity.class);
                 Intent intent = new Intent(context, LeaderboardActivity.class);
+                intent.putExtra("timeLeftInMillis", timeLeftInMillis);
                 intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK); // Add this line
                 context.startActivity(intent);
             }
