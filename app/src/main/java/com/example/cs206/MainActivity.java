@@ -347,7 +347,7 @@ private Runnable reloadRunnable = new Runnable() {
             gameView.surfaceDestroyed(gameView.getHolder());
         }
     }
-    }
+
 
     @Override
     protected void onStop() {
