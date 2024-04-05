@@ -77,7 +77,6 @@ public class Enemy {
     }
 
     public void drawHealthBar(Canvas canvas, Paint paint) {
-        System.out.println(health);
         if (health <= 30) {
             paint.setColor(Color.RED);
         } else if (health <= 70) {

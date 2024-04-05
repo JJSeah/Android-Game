@@ -331,7 +331,35 @@ private Runnable reloadRunnable = new Runnable() {
 
         // Stop the music when the activity is paused
         musicPlayer.stopMusic();
+
+        // Stop the update loop when the activity is paused
+        handler.removeCallbacks(runnable);
+        reloadHandler.removeCallbacks(reloadRunnable);
+
+        // Shutdown the executorService when the activity is paused
+        executorService.shutdownNow();
+
+        if (gameView != null) {
+            gameView.surfaceDestroyed(gameView.getHolder());
+        }
     }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+
+        // Stop the update loop when the activity is stopped
+        handler.removeCallbacks(runnable);
+        reloadHandler.removeCallbacks(reloadRunnable);
+
+        // Shutdown the executorService when the activity is stopped
+        executorService.shutdownNow();
+
+        if (gameView != null) {
+            gameView.surfaceDestroyed(gameView.getHolder());
+        }
+    }
+
     @Override
     protected void onDestroy() {
         super.onDestroy();
@@ -339,15 +367,15 @@ private Runnable reloadRunnable = new Runnable() {
         // Stop the music when the activity is destroyed
         musicPlayer.stopMusic();
 
-        if (gameView != null) {
-            gameView.surfaceDestroyed(gameView.getHolder());
-        }
-
         // Stop the update loop when the activity is destroyed
         handler.removeCallbacks(runnable);
         reloadHandler.removeCallbacks(reloadRunnable);
 
         // Shutdown the executorService when the activity is destroyed
         executorService.shutdown();
+
+        if (gameView != null) {
+            gameView.surfaceDestroyed(gameView.getHolder());
+        }
     }
 }
