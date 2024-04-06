@@ -42,7 +42,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
         int screenHeight = metrics.heightPixels;
 
         // Load and scale the background to fit the screen
-        Bitmap originalBackground = BitmapFactory.decodeResource(getResources(), R.drawable.sg);
+        Bitmap originalBackground = BitmapFactory.decodeResource(getResources(), R.drawable.sg_2);
         background = Bitmap.createScaledBitmap(originalBackground, screenWidth,  (int)(screenHeight*0.75), false);
 
         // Initialize the CountDownTimer

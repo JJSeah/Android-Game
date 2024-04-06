@@ -34,7 +34,7 @@ public class Bullet {
     }
 
     public void draw(Canvas canvas, Paint paint) {
-        paint.setColor(Color.BLACK); // Change this line
+        paint.setColor(Color.WHITE); // Change this line
         canvas.drawCircle(x, y, 10, paint);
     }
 

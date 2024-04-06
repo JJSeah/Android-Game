@@ -51,7 +51,7 @@ public class Player {
         this.scheduler = Executors.newScheduledThreadPool(1);
 
         // Load the player image
-        playerImage = BitmapFactory.decodeResource(res, R.drawable.jet);
+        playerImage = BitmapFactory.decodeResource(res, R.drawable.spaceship);
         playerImage = Bitmap.createScaledBitmap(playerImage, (int) (2 * radius), (int) (2 * radius), false);
     }
     public void takeDamage(int damage) {
