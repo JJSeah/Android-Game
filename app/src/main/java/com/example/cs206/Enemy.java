@@ -22,9 +22,17 @@ public class Enemy {
     private long lastUpdateTime;
     private Paint paint; // Used for drawing the enemy
     private Bitmap enemyImage;
-
-
-
+    /**
+     * Constructor for the Enemy class.
+     *
+     * @param x Initial X position of the enemy.
+     * @param y Initial Y position of the enemy.
+     * @param speedX Initial horizontal speed of the enemy.
+     * @param speedY Initial vertical speed of the enemy.
+     * @param screenWidth Width of the screen.
+     * @param screenHeight Height of the screen.
+     * @param res Resources object to load the enemy image.
+     */
     public Enemy(float x, float y, float speedX, float speedY, float screenWidth, float screenHeight, Resources res) {
         this.x = x;
         this.y = y;
@@ -98,11 +106,6 @@ public void drawHealthBar(Canvas canvas, Paint paint) {
 
     canvas.drawRect(x, y - 20, x + health, y - 10, paint);
 }
-
-//    public boolean checkCollision(Player player) {
-//        float distance = (float) Math.sqrt(Math.pow(player.getX() - x, 2) + Math.pow(player.getY() - y, 2));
-//        return distance < player.getRadius() + 50; // 50 is the radius of the enemy
-//    }
 
     //get health
     public int getHealth() {

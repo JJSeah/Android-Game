@@ -8,7 +8,6 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.os.CountDownTimer;
 import android.util.DisplayMetrics;
-import android.util.Log;
 import android.view.Display;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
@@ -20,65 +19,64 @@ import android.view.WindowManager;
 import android.view.WindowMetrics;
 
 public class GameView extends SurfaceView implements SurfaceHolder.Callback {
+    private static final int TIMER_DURATION = 60000;
+    private static final int TIMER_INTERVAL = 1000;
+    private static final int TEXT_SIZE = 60;
+
     private Player player;
     private Enemy enemy;
     private Paint paint;
     private Canvas canvas;
     private CountDownTimer countDownTimer;
     private long timeLeftInMillis;
-    private volatile boolean isSurfaceActive;
+    private volatile boolean isGameRunning;
     private Bitmap background;
     private Thread gameThread;
     private int height;
     private int width;
     private Context context;
 
-    @Override
-    protected void onSizeChanged(int w, int h, int oldw, int oldh) {
-        width = w;
-        height = h;
-        super.onSizeChanged(w, h, oldw, oldh);
-    }
-
+    /**
+     * Constructor for the GameView class.
+     *
+     * @param context The context of the application.
+     * @param player The player object.
+     * @param enemy The enemy object.
+     */
     public GameView(Context context, Player player, Enemy enemy) {
-
         super(context);
         getHolder().addCallback(this);
         this.context = context;
         this.player = player;
-        this.enemy = enemy; // Initialize the enemy here
+        this.enemy = enemy;
         paint = new Paint();
 
-        // Get the size of the screen
         DisplayMetrics metrics = context.getResources().getDisplayMetrics();
         int screenWidth = metrics.widthPixels;
         int screenHeight = metrics.heightPixels;
 
-        // Load and scale the background to fit the screen
         Bitmap originalBackground = BitmapFactory.decodeResource(getResources(), R.drawable.sg_2);
         background = Bitmap.createScaledBitmap(originalBackground, screenWidth,  (int)(screenHeight*0.75), false);
 
-        // Initialize the CountDownTimer
-        countDownTimer = new CountDownTimer(60000, 1000) { // 60 seconds timer
+        countDownTimer = new CountDownTimer(TIMER_DURATION, TIMER_INTERVAL) {
             public void onTick(long millisUntilFinished) {
                 timeLeftInMillis = millisUntilFinished;
             }
 
             public void onFinish() {
-                //Start the end game activity
                 Intent intent = new Intent(context, EndGameActivity.class);
-                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK); // Add this line
+                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                 intent.putExtra("endgame", "timesup");
                 context.startActivity(intent);
             }
-        }.start(); // Start the timer
+        }.start();
     }
 
     @Override
     public void surfaceCreated(SurfaceHolder holder) {
-        isSurfaceActive = true;
+        isGameRunning = true;
         gameThread = new Thread(() -> {
-            while (isSurfaceActive) {
+            while (isGameRunning) {
                 if (!holder.getSurface().isValid()) {
                     continue;
                 }
@@ -101,12 +99,13 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
         player.draw(canvas, paint);
         enemy.draw(canvas, paint);
         enemy.drawHealthBar(canvas, paint);
-        paint.setColor(Color.BLACK); // Change this to your preferred color
-        paint.setTextSize(60); // Change this to your preferred text size
+        paint.setColor(Color.BLACK);
+        paint.setTextSize(TEXT_SIZE);
         Paint timeAndHealth = new Paint();
-        canvas.drawText("Time left: " + timeLeftInMillis / 1000, 10 , 60, paint); // Top left
-        canvas.drawText("Player health: " + player.getHealth() + "%", width - 600 , 60, paint); // Top right
+        canvas.drawText("Time left: " + timeLeftInMillis / 1000, 10 , 60, paint);
+        canvas.drawText("Player health: " + player.getHealth() + "%", width+500 , 60, paint);
     }
+
     public long getTimeLeftInMillis() {
         return (timeLeftInMillis / 1000);
     }
@@ -118,8 +117,8 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
 
     @Override
     public void surfaceDestroyed(@NonNull SurfaceHolder surfaceHolder) {
-        isSurfaceActive = false;// Set to false when the SurfaceView is destroyed
-        countDownTimer.cancel(); // Stop the CountDownTimer
+        isGameRunning = false;
+        countDownTimer.cancel();
         try {
             gameThread.join();
             System.out.println("Game thread stopped");
@@ -137,7 +136,6 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
     }
 
     public void stop() {
-        // Add code here to stop the game}
+        // Add code here to stop the game
     }
-
 }

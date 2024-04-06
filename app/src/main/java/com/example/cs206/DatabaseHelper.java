@@ -5,21 +5,27 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
-import android.util.Log;
 
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * This is the DatabaseHelper class for the application.
+ * It extends SQLiteOpenHelper, which is a helper class to manage database creation and version management.
+ */
 public class DatabaseHelper extends SQLiteOpenHelper {
     private static final String DATABASE_NAME = "app_state.db";
     private static final int DATABASE_VERSION = 2;
-
-    // Table name and column names
     private static final String TABLE_PLAYER_SCORE = "player_score";
     private static final String COLUMN_ID = "id";
     private static final String COLUMN_SCORE = "score";
     private static final String COLUMN_TIME_SPENT = "time_left";
+    private static final String TOP_LIMIT = "10";
 
+    /**
+     * DatabaseHelper constructor.
+     * @param context The context to use to open or create the database.
+     */
     public DatabaseHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
     }
@@ -37,71 +43,49 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         onCreate(db);
     }
 
-    // Method to insert
-    public void insertScore(int score) {
-        SQLiteDatabase db = this.getWritableDatabase();
+    /**
+     * Inserts a new row into the database.
+     * @param score The score to insert.
+     * @param timeSpentInMillis The time spent to insert.
+     */
+    public void insertData(int score, long timeSpentInMillis) {
+        try (SQLiteDatabase db = this.getWritableDatabase()) {
+            ContentValues values = new ContentValues();
+            values.put(COLUMN_SCORE, score);
+            values.put(COLUMN_TIME_SPENT, timeSpentInMillis);
 
-        ContentValues values = new ContentValues();
-        values.put(COLUMN_SCORE, score);
-
-        // Insert a new row
-        db.insert(TABLE_PLAYER_SCORE, null, values);
-
-        db.close();
+            // Insert a new row
+            db.insert(TABLE_PLAYER_SCORE, null, values);
+        }
     }
 
-    public void insertTimeSpent(long timeSpentInMillis) {
-        SQLiteDatabase db = this.getWritableDatabase();
-
-        ContentValues values = new ContentValues();
-        values.put(COLUMN_TIME_SPENT, timeSpentInMillis);
-
-        // Insert a new row
-        db.insert(TABLE_PLAYER_SCORE, null, values);
-
-        db.close();
-    }
-
-public void insertDatabase(long timeLeftInMillis, int score) {
-    // Get a writable database
-    SQLiteDatabase db = this.getWritableDatabase();
-    // Create a new map of values, where column names are the keys
-    ContentValues values = new ContentValues();
-    values.put(COLUMN_TIME_SPENT, timeLeftInMillis);
-    values.put(COLUMN_SCORE, score);
-
-    // Insert a new row in the database
-    db.insert(TABLE_PLAYER_SCORE, null, values);
-
-    // Close the database connection
-    db.close();
-}
-
-    // Method to get the top scores
+    /**
+     * Retrieves the top scores from the database.
+     * @return A list of the top scores.
+     */
     public List<Integer> getTopScores() {
         List<Integer> scores = new ArrayList<>();
-        SQLiteDatabase db = this.getReadableDatabase();
-
-        Cursor cursor = db.query(TABLE_PLAYER_SCORE, new String[]{COLUMN_SCORE}, null, null, null, null, COLUMN_SCORE + " DESC", "10");
-        while (cursor.moveToNext()) {
-            scores.add(cursor.getInt(0));
+        try (SQLiteDatabase db = this.getReadableDatabase()) {
+            Cursor cursor = db.query(TABLE_PLAYER_SCORE, new String[]{COLUMN_SCORE}, null, null, null, null, COLUMN_SCORE + " DESC", TOP_LIMIT);
+            while (cursor.moveToNext()) {
+                scores.add(cursor.getInt(0));
+            }
         }
-        cursor.close();
-
         return scores;
     }
 
+    /**
+     * Retrieves the list of time spent from the database.
+     * @return A list of time spent.
+     */
     public List<Long> getTimeSpentList() {
         List<Long> timeSpentList = new ArrayList<>();
-        SQLiteDatabase db = this.getReadableDatabase();
-
-        Cursor cursor = db.query(TABLE_PLAYER_SCORE, new String[]{COLUMN_TIME_SPENT}, null, null, null, null, COLUMN_TIME_SPENT + " DESC", "10");
-        while (cursor.moveToNext()) {
-            timeSpentList.add(cursor.getLong(0));
+        try (SQLiteDatabase db = this.getReadableDatabase()) {
+            Cursor cursor = db.query(TABLE_PLAYER_SCORE, new String[]{COLUMN_TIME_SPENT}, null, null, null, null, COLUMN_TIME_SPENT + " DESC", TOP_LIMIT);
+            while (cursor.moveToNext()) {
+                timeSpentList.add(cursor.getLong(0));
+            }
         }
-        cursor.close();
-
         return timeSpentList;
     }
-
 }

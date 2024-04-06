@@ -22,10 +22,24 @@ import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
 
+/**
+ * LeaderboardActivity class that represents the leaderboard screen.
+ */
 public class LeaderboardActivity extends AppCompatActivity {
+    private static final int ROW_PADDING = 20;
+    private static final int TEXT_SIZE = 18;
+    private static final int TEXT_COLOR = Color.WHITE;
+    private static final int SPACE_HEIGHT = 20;
+
     private DatabaseHelper dbHelper;
     private TableLayout leaderboardTable;
 
+    /**
+     * Method that is called when the activity is starting.
+     * This is where most initialization should go.
+     *
+     * @param savedInstanceState This is a reference to a Bundle object that is passed into the onCreate method of every Android Activity.
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -39,7 +53,7 @@ public class LeaderboardActivity extends AppCompatActivity {
         for (int i = 0; i < timeSpentList.size(); i++) {
             // Create TableRow
             TableRow row = new TableRow(this);
-            row.setPadding(20, 20, 20, 20);
+            row.setPadding(ROW_PADDING, ROW_PADDING, ROW_PADDING, ROW_PADDING);
 
             TextView timeView = new TextView(this);
             String score = String.valueOf(timeSpentList.get(i));
@@ -47,8 +61,8 @@ public class LeaderboardActivity extends AppCompatActivity {
 
             timeView.setText(score);
             timeView.setGravity(Gravity.CENTER);
-            timeView.setTextSize(18); // Adjust text size as needed
-            timeView.setTextColor(Color.WHITE); // Adjust text color as needed
+            timeView.setTextSize(TEXT_SIZE);
+            timeView.setTextColor(TEXT_COLOR);
 
             timeView.setPadding(10, 10, 10, 10);
             row.addView(timeView);
@@ -57,41 +71,27 @@ public class LeaderboardActivity extends AppCompatActivity {
 
             if (i != timeSpentList.size() - 1) {
                 View space = new View(this);
-                space.setLayoutParams(new TableRow.LayoutParams(TableRow.LayoutParams.MATCH_PARENT, 20));
+                space.setLayoutParams(new TableRow.LayoutParams(TableRow.LayoutParams.MATCH_PARENT, SPACE_HEIGHT));
                 leaderboardTable.addView(space);
             }
         }
 
-
-        Button btnRestart = findViewById(R.id.btn_back);
-        btnRestart.setOnClickListener(new View.OnClickListener() {
+        Button backButton = findViewById(R.id.btn_back);
+        backButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(LeaderboardActivity.this, MainMenu.class);
-                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK); // Add this line
+                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                 startActivity(intent);
                 finish();
             }
         });
-
-//        Button btnRestart = findViewById(R.id.btn_restart);
-//        btnRestart.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                Intent intent = new Intent(LeaderboardActivity.this, MainActivity.class);
-//                startActivity(intent);
-//                finish();
-//            }
-//        });
-
-//        Button btnExit = findViewById(R.id.btn_exit);
-//        btnExit.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                finish();
-//            }
-//        });
     }
+
+    /**
+     * Method that is called when the activity is destroyed.
+     * It closes the dbHelper.
+     */
     @Override
     protected void onDestroy() {
         super.onDestroy();

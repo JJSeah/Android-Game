@@ -15,9 +15,15 @@ import android.widget.TextView;
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
 
+/**
+ * This is the EndGameActivity class for the application.
+ * It represents the end game screen that is displayed when the game ends.
+ */
 public class EndGameActivity extends AppCompatActivity {
-
-
+    /**
+     * Called when the activity is starting.
+     * @param savedInstanceState If the activity is being re-initialized after previously being shut down then this Bundle contains the data it most recently supplied in onSaveInstanceState(Bundle).
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -34,6 +40,10 @@ public class EndGameActivity extends AppCompatActivity {
 
         Button restartButton = (Button) findViewById(R.id.restartButton);
         Button menuButton = (Button) findViewById(R.id.menuButton);
+        /**
+         * This method is used to start a new activity.
+         * @param cls The class of the activity to start.
+         */
         restartButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -42,7 +52,10 @@ public class EndGameActivity extends AppCompatActivity {
                 finish();
             }
         });
-
+        /**
+         * This method is used to start a new activity.
+         * @param cls The class of the activity to start.
+         */
         menuButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -58,38 +71,5 @@ public class EndGameActivity extends AppCompatActivity {
                 finish();
             }
         });
-
-        // Calculate the top margin to position the button at the third quarter of the screen height
-//        DisplayMetrics displayMetrics = new DisplayMetrics();
-//        getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
-//        int screenHeight = displayMetrics.heightPixels;
-//        int topMargin = (int) (screenHeight * 0.7);
-//        int menuTopMargin = (int) (screenHeight * 0.8);;
-//
-//        // Set the parameters for the button
-//        RelativeLayout.LayoutParams layoutParams = (RelativeLayout.LayoutParams) restartButton.getLayoutParams();
-//        layoutParams.addRule(RelativeLayout.CENTER_HORIZONTAL);
-//        layoutParams.topMargin = topMargin;
-//        restartButton.setLayoutParams(layoutParams);
-//
-//        // Set the parameters for the button
-//        RelativeLayout.LayoutParams menuLayoutParams = (RelativeLayout.LayoutParams) menuButton.getLayoutParams();
-//        menuLayoutParams.addRule(RelativeLayout.CENTER_HORIZONTAL);
-//        menuLayoutParams.topMargin = menuTopMargin;
-//        menuButton.setLayoutParams(menuLayoutParams);
     }
-
-//    private void setBackground() {
-//        // Get the size of the screen
-//        DisplayMetrics metrics = getResources().getDisplayMetrics();
-//        int screenWidth = metrics.widthPixels;
-//        int screenHeight = metrics.heightPixels;
-//
-//        // Load and scale the background to fit the screen
-//        Bitmap originalBackground = BitmapFactory.decodeResource(getResources(), R.drawable.sg_3);
-//        Bitmap background = Bitmap.createScaledBitmap(originalBackground, screenWidth, screenHeight, false);
-//
-//        // Set the scaled bitmap as the source for the ImageView
-//        backgroundImageView.setImageBitmap(background);
-//    }
 }

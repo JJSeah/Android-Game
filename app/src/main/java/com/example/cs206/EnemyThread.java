@@ -12,7 +12,6 @@ public class EnemyThread extends Thread {
     public void run() {
         isRunning = true;
         while (isRunning && !Thread.currentThread().isInterrupted()) {
-            if(!isRunning) {System.out.println(isRunning);}
             enemy.update(); // Update the enemy's position
             try {
                 Thread.sleep(1); // Sleep for a short time to avoid using 100% CPU

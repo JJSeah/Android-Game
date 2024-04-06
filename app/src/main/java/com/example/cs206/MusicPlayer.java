@@ -9,6 +9,7 @@ public class MusicPlayer {
     private MediaPlayer mediaPlayer;
     private final Context context;
     private Thread thread;
+    private boolean isPlaying = false; // Add this line
 
     public MusicPlayer(Context context) {
         this.context = context;
@@ -21,12 +22,14 @@ public class MusicPlayer {
     public void playMusic() {
         Log.d("MUSIC", "Started thread");
         thread.start();
+        isPlaying = true; // Add this line
     }
 
     public void resumeMusic() {
         if (mediaPlayer != null) {
             Log.d("MUSIC", "Resumed music");
             mediaPlayer.start();
+            isPlaying = true; // Add this line
         }
     }
 
@@ -34,14 +37,16 @@ public class MusicPlayer {
         if (mediaPlayer != null) {
             Log.d("MUSIC", "Paused music");
             mediaPlayer.pause();
+            isPlaying = false; // Add this line
         }
     }
 
     public void stopMusic() {
-        if (mediaPlayer != null) {
+        if (mediaPlayer != null && isPlaying) { // Modify this line
             mediaPlayer.stop();
             mediaPlayer.release();
             mediaPlayer = null;
+            isPlaying = false; // Add this line
         }
 
         try {
