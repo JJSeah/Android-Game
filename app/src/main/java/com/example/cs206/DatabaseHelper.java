@@ -65,7 +65,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 public void insertDatabase(long timeLeftInMillis, int score) {
     // Get a writable database
     SQLiteDatabase db = this.getWritableDatabase();
-    System.out.println(score +"time"+ timeLeftInMillis);
     // Create a new map of values, where column names are the keys
     ContentValues values = new ContentValues();
     values.put(COLUMN_TIME_SPENT, timeLeftInMillis);

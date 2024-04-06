@@ -87,13 +87,6 @@ public class Player {
     }
 
     public void draw(Canvas canvas, Paint paint) {
-        if (health > 70) {
-            paint.setColor(Color.GREEN);
-        } else if (health > 30) {
-            paint.setColor(Color.YELLOW);
-        } else {
-            paint.setColor(Color.RED);
-        }
 //        canvas.drawCircle(x, y, radius, paint);
         canvas.drawBitmap(playerImage, x - radius, y - radius, paint);
         // Draw all the bullets
@@ -124,41 +117,6 @@ public class Player {
         int progress = (int) ((timeSinceLastFire / (float) FIRE_COOLDOWN) * 100);
         return Math.min(progress, 100);
     }
-//
-//    public void moveUp(float distance) {
-//        if (y - distance >= radius) {
-//            y -= distance;
-//        }
-//    }
-//
-//    public void moveDown(float distance) {
-//        if (y + distance <= screenHeight - radius) {
-//            y += distance;
-//        }
-//    }
-//
-//    public void moveLeft(float distance) {
-//        if (x - distance >= radius) {
-//            x -= distance;
-//        }
-//    }
-//
-//    public void moveRight(float distance) {
-//        if (x + distance <= screenWidth - radius) {
-//            x += distance;
-//        }
-//    }
-//
-//    public void move(float deltaX, float deltaY) {
-//        // Move the player by the given deltas
-//        if (x + deltaX >= radius && x + deltaX <= screenWidth - radius) {
-//            x += deltaX;
-//        }
-//        if (y + deltaY >= radius && y + deltaY <= screenHeight - radius) {
-//            y += deltaY;
-//        }
-//    }
-
 public synchronized void reload() {
     isReloading = true;
     final int intervalSteps = 10; // Number of steps for the reload progress

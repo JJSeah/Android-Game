@@ -103,57 +103,9 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
         paint.setColor(Color.BLACK); // Change this to your preferred color
         paint.setTextSize(60); // Change this to your preferred text size
         Paint timeAndHealth = new Paint();
-        canvas.drawText("Time left: " + timeLeftInMillis / 1000, width/7 , 200, paint);
-        canvas.drawText("Player health: " + player.getHealth() + "%", 4*width/7 , 200, paint);
+        canvas.drawText("Time left: " + timeLeftInMillis / 1000, 10 , 60, paint); // Top left
+        canvas.drawText("Player health: " + player.getHealth() + "%", width - 600 , 60, paint); // Top right
     }
-
-//    @Override
-//    protected void onDraw(Canvas canvas) {
-//        // Clear the canvas
-//        Paint paint = new Paint();
-//        canvas.drawBitmap(background, 0, 0, null);
-//
-//        player.draw(canvas, paint);
-//
-//        // Draw the enemy
-//        enemy.draw(canvas, paint);
-//        enemy.drawHealthBar(canvas, paint);
-//
-//        // Draw the timer
-//        paint.setColor(Color.BLACK); // Change this to your preferred color
-//        paint.setTextSize(50); // Change this to your preferred text size
-//        canvas.drawText("Time left: " + timeLeftInMillis / 1000, 10, 50, paint);
-//    }
-
-
-//    private void updateCanvas(Canvas canvas) {
-//        Paint paint = new Paint();
-//        paint.setColor(Color.BLACK); // Set default color for text
-//        paint.setTextSize(TEXT_SIZE); // Set default text size
-//
-//        // Draw background
-//        canvas.drawBitmap(background, 0, 0, null);
-//
-//        // Draw player and enemy
-//        player.draw(canvas, paint);
-//        enemy.draw(canvas, paint);
-//
-//        // Draw enemy health bar
-//        enemy.drawHealthBar(canvas, paint);
-//
-//        // Draw time left
-//        Paint timePaint = new Paint(paint); // Copy paint object
-//        canvas.drawText("Time left: " + timeLeftInMillis / 1000, width / 6, 200, timePaint);
-//
-//        // Draw player health
-//        Paint healthPaint = new Paint(paint); // Copy paint object
-//        canvas.drawText("Player health: " + player.getHealth() + "%", 3 * width / 5, 200, healthPaint);
-//    }
-//
-//    // Define constants
-//    private static final int TEXT_SIZE = 50;
-
-
     public long getTimeLeftInMillis() {
         return (timeLeftInMillis / 1000);
     }

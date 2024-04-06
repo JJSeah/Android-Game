@@ -2,7 +2,7 @@ package com.example.cs206;
 
 public class EnemyThread extends Thread {
     private Enemy enemy;
-    private static final int MOVE_COOLDOWN = 1000; // Cooldown time in milliseconds
+    private boolean isRunning = false;
 
     public EnemyThread(Enemy enemy) {
         this.enemy = enemy;
@@ -10,13 +10,19 @@ public class EnemyThread extends Thread {
 
     @Override
     public void run() {
-        while (!Thread.currentThread().isInterrupted()) {
+        isRunning = true;
+        while (isRunning && !Thread.currentThread().isInterrupted()) {
+            if(!isRunning) {System.out.println(isRunning);}
             enemy.update(); // Update the enemy's position
             try {
                 Thread.sleep(1); // Sleep for a short time to avoid using 100% CPU
             } catch (InterruptedException e) {
-                Thread.currentThread().interrupt(); // Preserve the interrupt
+                isRunning = false;
             }
         }
+    }
+
+    public void stopThread() {
+        isRunning = false;
     }
 }

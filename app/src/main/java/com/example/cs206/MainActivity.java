@@ -108,6 +108,19 @@ private Runnable reloadRunnable = new Runnable() {
                 }
             }
             isCollisionRunnableRunning = false;
+            // Check if the enemy's health is 0
+            if (enemy.getHealth() <= 0) {
+                updateScore(); // Update the score display=
+                // Player is dead, handle game over
+                handleGameOver();
+                dbHelper.insertDatabase(gameView.getTimeLeftInMillis(),score);
+            } else {
+                // Redraw the GameView
+                gameView.invalidate();
+
+                // Schedule the next update
+                handler.postDelayed(this, 100);
+            }
         }
     };
     private Runnable runnable = new Runnable() {
@@ -124,19 +137,6 @@ private Runnable reloadRunnable = new Runnable() {
                 executorService.submit(bulletCollisionRunnable);
             }
 
-            // Check if the enemy's health is 0
-            if (enemy.getHealth() <= 0) {
-                updateScore(); // Update the score display=
-                handleGameOver();
-            dbHelper.insertDatabase(gameView.getTimeLeftInMillis(),score);
-//            dbHelper.insertScore(score); // Save the score to the database
-            } else {
-                // Redraw the GameView
-                gameView.invalidate();
-
-                // Schedule the next update
-                handler.postDelayed(this, 100);
-            }
         }
     };
 
@@ -176,7 +176,6 @@ private Runnable reloadRunnable = new Runnable() {
                 // Shoot in the direction
                 player.shoot(direction);
 
-
                 // Call reloadRunnable after shooting a bullet
                 reloadHandler.removeCallbacks(reloadRunnable);
                 reloadHandler.post(reloadRunnable);
@@ -188,6 +187,7 @@ private Runnable reloadRunnable = new Runnable() {
         screenHeight = getResources().getDisplayMetrics().heightPixels;
         // Only create a new Enemy if one doesn't already exist
         if (enemy == null) {
+            System.out.println("Creating new enemy");
             enemy = new Enemy(0, 0, 5, 5, screenWidth, screenHeight, getResources());
             enemyThread = new EnemyThread(enemy);
             enemyThread.start();
@@ -199,6 +199,7 @@ private Runnable reloadRunnable = new Runnable() {
 
 
         gameView = new GameView(this, player, enemy);
+        isSurfaceViewActive = true;
 
         // Set the size of the GameView
         ViewGroup.LayoutParams params = new ViewGroup.LayoutParams((int) (screenWidth), (int) (screenHeight * 0.75));
@@ -305,16 +306,12 @@ private Runnable reloadRunnable = new Runnable() {
             mediaPlayer = null;
         }
 
-        if (isSurfaceViewActive) {
-            gameView.surfaceDestroyed(gameView.getHolder());
-            isSurfaceViewActive = false;
-        }
-
         // Start the end game activity
         startLeaderboardActivity();
     }
 
     private void startLeaderboardActivity() {
+        Log.d("MainActivity", "Starting LeaderboardActivity");
         Intent intent = new Intent(MainActivity.this, LeaderboardActivity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK); // remove back stack
         startActivity(intent);
@@ -358,8 +355,11 @@ private Runnable reloadRunnable = new Runnable() {
     @Override
     protected void onResume() {
         super.onResume();
+        // Start the game thread, music, and executor service here
         musicPlayer.resumeMusic();
         isActivityVisible = true;
+        // Start the executorService
+        executorService = Executors.newScheduledThreadPool(5);
     }
 
     @Override
@@ -376,13 +376,9 @@ private Runnable reloadRunnable = new Runnable() {
         handler.removeCallbacks(bulletCollisionRunnable);
         handler.removeCallbacks(collisionRunnable);
         reloadHandler.removeCallbacks(reloadRunnable);
-
-        // Shutdown the executorService when the activity is paused
         executorService.shutdownNow();
-
-        if (isSurfaceViewActive) {
-            gameView.surfaceDestroyed(gameView.getHolder());
-            isSurfaceViewActive = false;
+        if (enemyThread != null) {
+            enemyThread.stopThread();
         }
     }
 
@@ -397,15 +393,16 @@ private Runnable reloadRunnable = new Runnable() {
 
         // Shutdown the executorService when the activity is stopped
         executorService.shutdownNow();
-
-        if (isSurfaceViewActive) {
-            gameView.surfaceDestroyed(gameView.getHolder());
-            isSurfaceViewActive = false;
+        if (enemyThread != null) {
+            enemyThread.stopThread();
         }
+
     }
 
     @Override
     protected void onDestroy() {
+        Log.d("MainActivity", "onDestroy started");
+
         super.onDestroy();
 
         // Stop the music when the activity is destroyed
@@ -416,13 +413,13 @@ private Runnable reloadRunnable = new Runnable() {
         handler.removeCallbacks(bulletCollisionRunnable);
         handler.removeCallbacks(collisionRunnable);
         reloadHandler.removeCallbacks(reloadRunnable);
+        if (enemyThread != null) {
+            enemyThread.stopThread();
+        }
 
         // Shutdown the executorService when the activity is destroyed
         executorService.shutdown();
-        if (isSurfaceViewActive) {
-            gameView.surfaceDestroyed(gameView.getHolder());
-            isSurfaceViewActive = false;
-        }
+        Log.d("MainActivity", "onDestroy ended");
 
     }
 }
