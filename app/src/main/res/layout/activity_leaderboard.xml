@@ -2,9 +2,28 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@drawable/background_gradient"
     tools:context=".LeaderboardActivity">
 
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        >
+
+    <TextView
+        android:id="@+id/text_leaderboard_title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:textStyle="bold"
+        android:text="Leaderboard"
+        android:textSize="24sp"
+        android:gravity="center"
+        />
+
     <TableLayout
+        android:layout_weight="50"
         android:id="@+id/leaderboard_table"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -12,6 +31,7 @@
     </TableLayout>
 
     <Button
+        android:layout_weight="1"
         android:id="@+id/btn_back"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -31,4 +51,5 @@
 <!--        android:layout_marginBottom="16dp"-->
 <!--        android:text="Exit" />-->
 
+    </LinearLayout>
 </RelativeLayout>
