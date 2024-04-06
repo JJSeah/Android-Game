@@ -100,11 +100,11 @@ private Runnable reloadRunnable = new Runnable() {
         public void run() {
             // Check for collision between player and enemy
             if (isColliding(player, enemy)) {
-                System.out.println("Collision detected!");
+                Log.d("COLLISION", "Collision detected");
                 player.takeDamage(10); // Assume the player takes 10 damage when colliding with an enemy
                 if (player.getHealth() <= 0) {
                     enemyThread.interrupt();
-                    handleGameOver();
+                    didNotWin();
                 }
             }
             isCollisionRunnableRunning = false;
@@ -113,8 +113,6 @@ private Runnable reloadRunnable = new Runnable() {
     private Runnable runnable = new Runnable() {
         @Override
         public void run() {
-            // Update the enemy's position
-//            enemy.update();
             if (!isCollisionRunnableRunning) {
                 isCollisionRunnableRunning = true;
                 new Thread(collisionRunnable).start();
@@ -129,7 +127,6 @@ private Runnable reloadRunnable = new Runnable() {
             // Check if the enemy's health is 0
             if (enemy.getHealth() <= 0) {
                 updateScore(); // Update the score display=
-                // Player is dead, handle game over
                 handleGameOver();
             dbHelper.insertDatabase(gameView.getTimeLeftInMillis(),score);
 //            dbHelper.insertScore(score); // Save the score to the database
@@ -248,6 +245,41 @@ private Runnable reloadRunnable = new Runnable() {
         });
     }
 
+    private void didNotWin() {
+
+        Log.d("Collision", "Player died before:");
+        if (handler != null) {
+            handler.removeCallbacks(collisionRunnable);
+            handler.removeCallbacks(runnable);
+            handler.removeCallbacks(bulletCollisionRunnable);
+        }
+
+        if (reloadHandler != null) {
+            reloadHandler.removeCallbacks(reloadRunnable);
+        }
+
+        // Shutdown the executorService
+        if (executorService != null && !executorService.isShutdown()) {
+            executorService.shutdown();
+        }
+
+        // Stop the music
+        if (mediaPlayer != null && mediaPlayer.isPlaying()) {
+            mediaPlayer.stop();
+            mediaPlayer.release();
+            mediaPlayer = null;
+        }
+
+        if (isSurfaceViewActive) {
+            gameView.surfaceDestroyed(gameView.getHolder());
+            isSurfaceViewActive = false;
+        }
+
+        Intent intent = new Intent(MainActivity.this, EndGameActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK); // Add this line
+        startActivity(intent);
+        finish();
+    }
 
     private void handleGameOver() {
         // Stop the update loop
@@ -333,11 +365,10 @@ private Runnable reloadRunnable = new Runnable() {
     @Override
     protected void onPause() {
         super.onPause();
-        musicPlayer.pauseMusic();
         isActivityVisible = false;
 
         // Stop the music when the activity is paused
-        musicPlayer.stopMusic();
+        musicPlayer.pauseMusic();
 
         // Stop the update loop when the activity is paused
 

@@ -8,12 +8,14 @@ import java.util.concurrent.Future;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
+import android.content.Intent;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.util.Log;
 
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
@@ -71,8 +73,7 @@ public class Player {
                 try {
                     int damage = damageQueue.take();
                     health -= damage;
-
-
+                    Log.d("COLLISION", "Player's health is now " + health);
                     if (health <= 0) {
                         // Player is dead, handle game over
                         break;

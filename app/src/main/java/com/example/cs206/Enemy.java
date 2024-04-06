@@ -97,10 +97,11 @@ public void drawHealthBar(Canvas canvas, Paint paint) {
     canvas.drawRect(x, y - 20, x + health, y - 10, paint);
 }
 
-    public boolean checkCollision(Player player) {
-        float distance = (float) Math.sqrt(Math.pow(player.getX() - x, 2) + Math.pow(player.getY() - y, 2));
-        return distance < player.getRadius() + 50; // 50 is the radius of the enemy
-    }
+//    public boolean checkCollision(Player player) {
+//        float distance = (float) Math.sqrt(Math.pow(player.getX() - x, 2) + Math.pow(player.getY() - y, 2));
+//        return distance < player.getRadius() + 50; // 50 is the radius of the enemy
+//    }
+
     //get health
     public int getHealth() {
         return health;

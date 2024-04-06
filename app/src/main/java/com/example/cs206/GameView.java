@@ -18,7 +18,6 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
     private Enemy enemy;
     private Paint paint;
     private Canvas canvas;
-
     private CountDownTimer countDownTimer;
     private long timeLeftInMillis;
     private volatile boolean isSurfaceActive;
@@ -26,7 +25,6 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
     private Thread gameThread;
 
     private Context context;
-
 
     public GameView(Context context, Player player, Enemy enemy) {
         super(context);
@@ -72,7 +70,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
                 Canvas canvas = holder.lockCanvas();
                 if (canvas != null) {
                     synchronized (holder) {
-                        onDraw(canvas);
+                        updateCanvas(canvas);
                     }
                     holder.unlockCanvasAndPost(canvas);
                     invalidate();
@@ -82,23 +80,38 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
         gameThread.start();
     }
 
-    @Override
-    protected void onDraw(Canvas canvas) {
-        // Clear the canvas
+    private void updateCanvas(Canvas canvas) {
         Paint paint = new Paint();
         canvas.drawBitmap(background, 0, 0, null);
 
         player.draw(canvas, paint);
 
-        // Draw the enemy
         enemy.draw(canvas, paint);
         enemy.drawHealthBar(canvas, paint);
 
-        // Draw the timer
         paint.setColor(Color.BLACK); // Change this to your preferred color
         paint.setTextSize(50); // Change this to your preferred text size
         canvas.drawText("Time left: " + timeLeftInMillis / 1000, 10, 50, paint);
+        canvas.drawText("Player health: " + player.getHealth(), 800, 50, paint);
     }
+
+//    @Override
+//    protected void onDraw(Canvas canvas) {
+//        // Clear the canvas
+//        Paint paint = new Paint();
+//        canvas.drawBitmap(background, 0, 0, null);
+//
+//        player.draw(canvas, paint);
+//
+//        // Draw the enemy
+//        enemy.draw(canvas, paint);
+//        enemy.drawHealthBar(canvas, paint);
+//
+//        // Draw the timer
+//        paint.setColor(Color.BLACK); // Change this to your preferred color
+//        paint.setTextSize(50); // Change this to your preferred text size
+//        canvas.drawText("Time left: " + timeLeftInMillis / 1000, 10, 50, paint);
+//    }
 
     public long getTimeLeftInMillis() {
         return (timeLeftInMillis / 1000);

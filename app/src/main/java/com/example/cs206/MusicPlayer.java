@@ -19,20 +19,20 @@ public class MusicPlayer {
     }
 
     public void playMusic() {
-        Log.d("TAG", "Started thread");
+        Log.d("MUSIC", "Started thread");
         thread.start();
     }
 
     public void resumeMusic() {
         if (mediaPlayer != null) {
-            Log.d("TAG", "Resumed music");
+            Log.d("MUSIC", "Resumed music");
             mediaPlayer.start();
         }
     }
 
     public void pauseMusic() {
         if (mediaPlayer != null) {
-            Log.d("TAG", "Paused music");
+            Log.d("MUSIC", "Paused music");
             mediaPlayer.pause();
         }
     }
@@ -46,9 +46,9 @@ public class MusicPlayer {
 
         try {
             thread.join();
-            Log.d("TAG", "Stopped music and killed thread");
+            Log.d("MUSIC", "Stopped music and killed thread");
         } catch (InterruptedException e) {
-            Log.d("TAG", "Error stopping music");
+            Log.d("MUSIC", "Error stopping music");
         }
     }
 }
