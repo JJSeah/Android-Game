@@ -7,4 +7,10 @@
         Shoot down the monster before the it\'s too late!\n
         The future of Singapore is in your hands
     </string>
+
+    <string name="game_lost">
+        You did not kill the monster in time.\n
+        Try again?
+    </string>
+
 </resources>
