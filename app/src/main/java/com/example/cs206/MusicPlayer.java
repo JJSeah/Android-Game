@@ -56,4 +56,12 @@ public class MusicPlayer {
             Log.d("MUSIC", "Error stopping music");
         }
     }
+    @Override
+    protected void finalize() throws Throwable {
+        if (mediaPlayer != null) {
+            mediaPlayer.release();
+            mediaPlayer = null;
+        }
+        super.finalize();
+    }
 }

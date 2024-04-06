@@ -137,5 +137,6 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
 
     public void stop() {
         // Add code here to stop the game
+        surfaceDestroyed(getHolder());
     }
 }

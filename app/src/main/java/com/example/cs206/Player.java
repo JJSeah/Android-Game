@@ -31,6 +31,9 @@ public class Player {
     private ScheduledExecutorService scheduler;
     private BlockingQueue<Integer> damageQueue = new LinkedBlockingQueue<>();
     private Bitmap playerImage;
+    private long lastDamageTime = 0;
+    private static final long DAMAGE_COOLDOWN = 5000; // Cooldown time in milliseconds
+
 
     /**
      * Player constructor.
@@ -76,11 +79,14 @@ public class Player {
 
     // Damage related methods
     public void takeDamage(int damage) {
-        try {
-            damageQueue.put(damage);
-            Thread.sleep(1000); // Simulate some processing time
-        } catch (InterruptedException e) {
-            Thread.currentThread().interrupt();
+        long currentTime = System.currentTimeMillis();
+        if (currentTime - lastDamageTime >= DAMAGE_COOLDOWN) {
+            try {
+                damageQueue.put(damage);
+                lastDamageTime = currentTime;
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
+            }
         }
     }
     public void updateHealth() {

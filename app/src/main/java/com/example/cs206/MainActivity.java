@@ -127,14 +127,15 @@ public class MainActivity extends AppCompatActivity {
                 if (player.getHealth() <= 0) {
                     enemyThread.interrupt();
                     didNotWin();
+                    isCollisionRunnableRunning = false;
                 }
             }
-            isCollisionRunnableRunning = false;
             // Check if the enemy's health is 0
             if (enemy.getHealth() <= 0) {
                 updateScore(); // Update the score display
                 // Player is dead, handle game over
                 handleGameOver();
+                isCollisionRunnableRunning = false;
                 dbHelper.insertData(score,gameView.getTimeLeftInMillis());
             } else {
                 // Redraw the GameView
@@ -143,6 +144,7 @@ public class MainActivity extends AppCompatActivity {
                 // Schedule the next update
                 handler.postDelayed(this, 100);
             }
+
         }
     };
 
