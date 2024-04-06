@@ -56,15 +56,6 @@ public class Player {
         playerImage = BitmapFactory.decodeResource(res, R.drawable.spaceship);
         playerImage = Bitmap.createScaledBitmap(playerImage, (int) (2 * radius), (int) (2 * radius), false);
     }
-    public void takeDamage(int damage) {
-        // This is the producer
-        try {
-            damageQueue.put(damage);
-            Thread.sleep(1000); // Simulate some processing time
-        } catch (InterruptedException e) {
-            Thread.currentThread().interrupt();
-        }
-    }
 
     public void updateHealth() {
         // This is the consumer
@@ -84,6 +75,17 @@ public class Player {
             }
         }).start();
     }
+
+    public void takeDamage(int damage) {
+        // This is the producer
+        try {
+            damageQueue.put(damage);
+            Thread.sleep(1000); // Simulate some processing time
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+        }
+    }
+
     public void draw(Canvas canvas, Paint paint) {
         if (health > 70) {
             paint.setColor(Color.GREEN);
@@ -122,6 +124,40 @@ public class Player {
         int progress = (int) ((timeSinceLastFire / (float) FIRE_COOLDOWN) * 100);
         return Math.min(progress, 100);
     }
+//
+//    public void moveUp(float distance) {
+//        if (y - distance >= radius) {
+//            y -= distance;
+//        }
+//    }
+//
+//    public void moveDown(float distance) {
+//        if (y + distance <= screenHeight - radius) {
+//            y += distance;
+//        }
+//    }
+//
+//    public void moveLeft(float distance) {
+//        if (x - distance >= radius) {
+//            x -= distance;
+//        }
+//    }
+//
+//    public void moveRight(float distance) {
+//        if (x + distance <= screenWidth - radius) {
+//            x += distance;
+//        }
+//    }
+//
+//    public void move(float deltaX, float deltaY) {
+//        // Move the player by the given deltas
+//        if (x + deltaX >= radius && x + deltaX <= screenWidth - radius) {
+//            x += deltaX;
+//        }
+//        if (y + deltaY >= radius && y + deltaY <= screenHeight - radius) {
+//            y += deltaY;
+//        }
+//    }
 
 public synchronized void reload() {
     isReloading = true;

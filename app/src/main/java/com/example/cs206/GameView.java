@@ -126,6 +126,35 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
 //        canvas.drawText("Time left: " + timeLeftInMillis / 1000, 10, 50, paint);
 //    }
 
+
+//    private void updateCanvas(Canvas canvas) {
+//        Paint paint = new Paint();
+//        paint.setColor(Color.BLACK); // Set default color for text
+//        paint.setTextSize(TEXT_SIZE); // Set default text size
+//
+//        // Draw background
+//        canvas.drawBitmap(background, 0, 0, null);
+//
+//        // Draw player and enemy
+//        player.draw(canvas, paint);
+//        enemy.draw(canvas, paint);
+//
+//        // Draw enemy health bar
+//        enemy.drawHealthBar(canvas, paint);
+//
+//        // Draw time left
+//        Paint timePaint = new Paint(paint); // Copy paint object
+//        canvas.drawText("Time left: " + timeLeftInMillis / 1000, width / 6, 200, timePaint);
+//
+//        // Draw player health
+//        Paint healthPaint = new Paint(paint); // Copy paint object
+//        canvas.drawText("Player health: " + player.getHealth() + "%", 3 * width / 5, 200, healthPaint);
+//    }
+//
+//    // Define constants
+//    private static final int TEXT_SIZE = 50;
+
+
     public long getTimeLeftInMillis() {
         return (timeLeftInMillis / 1000);
     }

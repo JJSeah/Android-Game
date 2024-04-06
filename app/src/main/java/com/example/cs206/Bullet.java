@@ -42,23 +42,25 @@ public class Bullet {
         return direction;
     }
 
-public boolean collidesWith(Enemy enemy) {
-    // Check if the bullet collides with the enemy
-    float dx = x - enemy.getX();
-    float dy = y - enemy.getY();
-    float distance = (float) Math.sqrt(dx * dx + dy * dy);
-    boolean collision = distance <= radius + enemy.getRadius();
 
-    // If a collision is detected, decrease the enemy's health and print a debug message
-    if (collision) {
-        enemy.decreaseHealth(10); // Decrease health by 10, adjust this value as needed
-    }
-    return collision;
-}
 
     public boolean collidesWithWall(float screenWidth, float screenHeight) {
         // Check if the bullet collides with the wall
         return x - radius < 0 || x + radius > screenWidth || y - radius < 0 || y + radius > screenHeight;
+    }
+
+    public boolean collidesWith(Enemy enemy) {
+        // Check if the bullet collides with the enemy
+        float dx = x - enemy.getX();
+        float dy = y - enemy.getY();
+        float distance = (float) Math.sqrt(dx * dx + dy * dy);
+        boolean collision = distance <= radius + enemy.getRadius();
+
+        // If a collision is detected, decrease the enemy's health and print a debug message
+        if (collision) {
+            enemy.decreaseHealth(10); // Decrease health by 10, adjust this value as needed
+        }
+        return collision;
     }
 
 }
