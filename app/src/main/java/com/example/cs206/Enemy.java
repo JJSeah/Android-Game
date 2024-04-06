@@ -44,6 +44,14 @@ public class Enemy {
         enemyImage = Bitmap.createScaledBitmap(enemyImage, 100, 100, false); // Assuming the enemy size is 100x100
     }
 
+    public void decreaseHealth(int amount) {
+        health -= amount;
+        if (health < 0) {
+            health = 0;
+        }
+    }
+
+
     public void update() {
         long currentTime = System.currentTimeMillis();
         float timeDelta = (currentTime - lastUpdateTime) / 1000f; // Calculate the time delta in seconds
@@ -69,12 +77,6 @@ public class Enemy {
     }
 
 
-    public void decreaseHealth(int amount) {
-        health -= amount;
-        if (health < 0) {
-            health = 0;
-        }
-    }
 
 public void drawHealthBar(Canvas canvas, Paint paint) {
     int startColor;

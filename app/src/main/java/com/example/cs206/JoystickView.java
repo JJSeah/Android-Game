@@ -17,15 +17,6 @@ public class JoystickView extends View {
     private JoystickListener joystickListener;
     private boolean isJoystickHeld = false;
     private Handler handler = new Handler();
-    private Runnable joystickRunnable = new Runnable() {
-        @Override
-        public void run() {
-            if (isJoystickHeld && joystickListener != null) {
-                joystickListener.onJoystickHold(getNormalizedX(), getNormalizedY());
-            }
-            handler.postDelayed(this, 100); // Adjust the delay as needed
-        }
-    };
 
 
     public JoystickView(Context context, AttributeSet attrs) {
@@ -39,8 +30,19 @@ public class JoystickView extends View {
         circlePaint.setStrokeCap(Paint.Cap.ROUND);
         circlePaint.setStrokeWidth(8);
     }
+
+    private Runnable joystickRunnable = new Runnable() {
+        @Override
+        public void run() {
+            if (isJoystickHeld && joystickListener != null) {
+                joystickListener.onJoystickHold(getNormalizedX(), getNormalizedY());
+            }
+            handler.postDelayed(this, 100); // Adjust the delay as needed
+        }
+    };
+
     @Override
-    protected void onDetachedFromWindow() {
+    protected void onDetachedFromWindow(){
         super.onDetachedFromWindow();
         // Remove the joystickRunnable from the handler
         handler.removeCallbacks(joystickRunnable);
