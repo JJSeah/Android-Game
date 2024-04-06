@@ -12,8 +12,7 @@
             android:layout_height="match_parent"
             android:orientation="vertical"
             android:gravity="center"
-            android:background="@drawable/background_gradient"
-            android:padding="20sp"
+            android:background="@drawable/background_gradient2"
             >
 
             <ImageView
@@ -33,16 +32,17 @@
                 />
 
             <TextView
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="@string/game_description"
                 android:textAlignment="center"
                 android:textColor="@color/white"
                 android:padding="20dp"
-                android:textSize="12dp"
+                android:textSize="16dp"
             />
 
             <Button
+                android:layout_marginHorizontal="20dp"
                 android:id="@+id/startButton"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -56,6 +56,7 @@
 
             <Button
                 android:id="@+id/leaderboardButton"
+                android:layout_margin="20dp"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="@drawable/button_background"
