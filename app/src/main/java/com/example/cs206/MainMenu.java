@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.RelativeLayout;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
@@ -32,5 +33,22 @@ public class MainMenu extends AppCompatActivity {
                 startActivity(intent);
             }
         });
+
+        Button leaderboardButton = findViewById(R.id.leaderboardButton);
+        leaderboardButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(MainMenu.this, LeaderboardActivity.class);
+                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK); // remove back stack
+                startActivity(intent);
+                finish();
+            }
+        });
+
+//        // Set the parameters for the button
+//        RelativeLayout.LayoutParams layoutParams = (RelativeLayout.LayoutParams) leaderboardButton.getLayoutParams();
+//        layoutParams.topMargin = 200;
+//        leaderboardButton.setLayoutParams(layoutParams);
+
     }
 }

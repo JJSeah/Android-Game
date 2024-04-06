@@ -37,22 +37,33 @@ public class LeaderboardActivity extends AppCompatActivity {
             leaderboardTable.addView(row);
         }
 
-        Button btnRestart = findViewById(R.id.btn_restart);
+        Button btnRestart = findViewById(R.id.btn_back);
         btnRestart.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(LeaderboardActivity.this, MainActivity.class);
+                Intent intent = new Intent(LeaderboardActivity.this, MainMenu.class);
+                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK); // Add this line
                 startActivity(intent);
                 finish();
             }
         });
 
-        Button btnExit = findViewById(R.id.btn_exit);
-        btnExit.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                finish();
-            }
-        });
+//        Button btnRestart = findViewById(R.id.btn_restart);
+//        btnRestart.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                Intent intent = new Intent(LeaderboardActivity.this, MainActivity.class);
+//                startActivity(intent);
+//                finish();
+//            }
+//        });
+
+//        Button btnExit = findViewById(R.id.btn_exit);
+//        btnExit.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                finish();
+//            }
+//        });
     }
 }
