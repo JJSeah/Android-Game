@@ -248,41 +248,16 @@ private Runnable reloadRunnable = new Runnable() {
     private void didNotWin() {
 
         Log.d("Collision", "Player died before:");
-        if (handler != null) {
-            handler.removeCallbacks(collisionRunnable);
-            handler.removeCallbacks(runnable);
-            handler.removeCallbacks(bulletCollisionRunnable);
-        }
-
-        if (reloadHandler != null) {
-            reloadHandler.removeCallbacks(reloadRunnable);
-        }
-
-        // Shutdown the executorService
-        if (executorService != null && !executorService.isShutdown()) {
-            executorService.shutdown();
-        }
-
-        // Stop the music
-        if (mediaPlayer != null && mediaPlayer.isPlaying()) {
-            mediaPlayer.stop();
-            mediaPlayer.release();
-            mediaPlayer = null;
-        }
-
-        if (isSurfaceViewActive) {
-            gameView.surfaceDestroyed(gameView.getHolder());
-            isSurfaceViewActive = false;
-        }
+        stopAllHandlers();
 
         Intent intent = new Intent(MainActivity.this, EndGameActivity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK); // Add this line
+        intent.putExtra("endgame", "died");
         startActivity(intent);
         finish();
     }
 
-    private void handleGameOver() {
-        // Stop the update loop
+    private void stopAllHandlers() {
         if (handler != null) {
             handler.removeCallbacks(collisionRunnable);
             handler.removeCallbacks(runnable);
@@ -309,7 +284,10 @@ private Runnable reloadRunnable = new Runnable() {
             gameView.surfaceDestroyed(gameView.getHolder());
             isSurfaceViewActive = false;
         }
+    }
 
+    private void handleGameOver() {
+        stopAllHandlers();
         // Start the end game activity
         startLeaderboardActivity();
     }

@@ -10,6 +10,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
@@ -22,6 +23,14 @@ public class EndGameActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_end_game);
         EdgeToEdge.enable(this);
+
+        String description = getIntent().getExtras().getString("endgame");
+        String gameLostMessage = getString(R.string.game_lost_died);
+
+        if (description.equals("died")) {
+            TextView textView = (TextView) findViewById(R.id.lost_description);
+            textView.setText(gameLostMessage);
+        }
 
         Button restartButton = (Button) findViewById(R.id.restartButton);
         Button menuButton = (Button) findViewById(R.id.menuButton);

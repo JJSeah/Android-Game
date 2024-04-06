@@ -8,9 +8,13 @@
         The future of Singapore is in your hands
     </string>
 
-    <string name="game_lost">
+    <string name="game_lost_time">
         You did not kill the monster in time.\n
         Try again?
     </string>
 
+    <string name="game_lost_died">
+        You died before killing the monster.\n
+        Try again?
+    </string>
 </resources>
