@@ -66,7 +66,6 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
 
             public void onFinish() {
                 //Start the end game activity
-//              Intent intent = new Intent(context, EndGameActivity.class);
                 Intent intent = new Intent(context, EndGameActivity.class);
                 intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK); // Add this line
                 context.startActivity(intent);
@@ -102,10 +101,10 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
         enemy.draw(canvas, paint);
         enemy.drawHealthBar(canvas, paint);
         paint.setColor(Color.BLACK); // Change this to your preferred color
-        paint.setTextSize(50); // Change this to your preferred text size
+        paint.setTextSize(60); // Change this to your preferred text size
         Paint timeAndHealth = new Paint();
-        canvas.drawText("Time left: " + timeLeftInMillis / 1000, width/6 , 200, paint);
-        canvas.drawText("Player health: " + player.getHealth() + "%", 3*width/5 , 200, paint);
+        canvas.drawText("Time left: " + timeLeftInMillis / 1000, width/7 , 200, paint);
+        canvas.drawText("Player health: " + player.getHealth() + "%", 4*width/7 , 200, paint);
     }
 
 //    @Override

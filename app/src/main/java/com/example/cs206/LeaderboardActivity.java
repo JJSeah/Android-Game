@@ -2,6 +2,7 @@ package com.example.cs206;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.ContextThemeWrapper;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -28,13 +29,26 @@ public class LeaderboardActivity extends AppCompatActivity {
         List<Long> timeSpentList = dbHelper.getTimeSpentList();
 
         for (int i = 0; i < timeSpentList.size(); i++) {
-            TableRow row = new TableRow(this);
-            TextView timeView = new TextView(this);
 
-            timeView.setText(String.valueOf(timeSpentList.get(i)));
+            // Apply TableRow style
+            TableRow row = new TableRow(new ContextThemeWrapper(this, R.style.LeaderboardTableRowStyle));
+
+            TextView timeView = new TextView(this);
+            // Apply TextView style
+            timeView.setTextAppearance(this, R.style.LeaderboardTextViewStyle);
+
+            timeView.setText(i + 1 + ". " + String.valueOf(timeSpentList.get(i)) + " seconds");
             row.addView(timeView);
 
             leaderboardTable.addView(row);
+
+//            TableRow row = new TableRow(this);
+//            TextView timeView = new TextView(this);
+//
+//            timeView.setText(String.valueOf(timeSpentList.get(i)));
+//            row.addView(timeView);
+//
+//            leaderboardTable.addView(row);
         }
 
         Button btnRestart = findViewById(R.id.btn_back);
