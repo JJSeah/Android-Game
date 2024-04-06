@@ -29,6 +29,7 @@ public class EndGameActivity extends AppCompatActivity {
         setBackground();
 
         Button restartButton = (Button) findViewById(R.id.restartButton);
+        Button menuButton = (Button) findViewById(R.id.menuButton);
         restartButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -38,17 +39,40 @@ public class EndGameActivity extends AppCompatActivity {
             }
         });
 
+        menuButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // Create an intent to start MainActivity
+                Intent intent = new Intent(EndGameActivity.this, MainMenu.class);
+
+                // If you don't want to create a new instance of MainActivity on top of the existing instances in the task,
+                // add the following flags to the intent.
+                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+
+                // Start the MainActivity
+                startActivity(intent);
+                finish();
+            }
+        });
+
         // Calculate the top margin to position the button at the third quarter of the screen height
         DisplayMetrics displayMetrics = new DisplayMetrics();
         getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
         int screenHeight = displayMetrics.heightPixels;
-        int topMargin = (int) (screenHeight * 0.75);
+        int topMargin = (int) (screenHeight * 0.7);
+        int menuTopMargin = (int) (screenHeight * 0.8);;
 
         // Set the parameters for the button
         RelativeLayout.LayoutParams layoutParams = (RelativeLayout.LayoutParams) restartButton.getLayoutParams();
         layoutParams.addRule(RelativeLayout.CENTER_HORIZONTAL);
         layoutParams.topMargin = topMargin;
         restartButton.setLayoutParams(layoutParams);
+
+        // Set the parameters for the button
+        RelativeLayout.LayoutParams menuLayoutParams = (RelativeLayout.LayoutParams) menuButton.getLayoutParams();
+        menuLayoutParams.addRule(RelativeLayout.CENTER_HORIZONTAL);
+        menuLayoutParams.topMargin = menuTopMargin;
+        menuButton.setLayoutParams(menuLayoutParams);
     }
 
     private void setBackground() {
