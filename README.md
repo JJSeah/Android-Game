@@ -1,7 +1,45 @@
-# CS205Proj
+# CS205 Game Application
 Singapore... but it's the year 2100.
 
-# Essential Features
+This is a simple game application developed in Android Studio using Java. The game involves a player and an enemy, with the player's objective being to shoot the enemy while avoiding collision.  
+# Features
+Player and Enemy: The game involves a player and an enemy. The player can shoot bullets at the enemy and the enemy moves around the screen.
+Joystick Control: The player's movement is controlled using a joystick.
+Score: The score is incremented each time a bullet hits the enemy.
+Collision Detection: The game checks for collisions between the player and the enemy, as well as between bullets and the enemy.
+Game Over: The game ends when the player's health reaches zero or the enemy's health reaches zero.
+Music: Background music is played during the game.
+
+# Code Structure
+The main classes in the application are:  
+**MainActivity**: This is the main activity of the application. It handles the game logic, including player movement, shooting bullets, collision detection, and game over scenarios.
+**GameView**: This is a custom view that handles the game's graphics and animations.
+**Player**: This class represents the player. It handles shooting bullets and updating the player's health.
+**Enemy**: This class represents the enemy. It handles the enemy's movement.
+**Bullet**: This class represents a bullet. It handles updating the bullet's position and checking for collisions with the enemy.
+**JoystickView**: This is a custom view that represents the joystick. It handles the joystick's movement.
+**MusicPlayer**: This class handles playing the background music.
+
+# Setup
+1. Clone the repository.
+2. Open the project in Android Studio.
+3. Run the application on an emulator or a physical device.
+
+# Requirements
+Android Studio
+Java
+Gradle
+Contributing
+
+# Team 
+- Justin Goh 
+- Chan Jess Myn 
+- Leong Zhe Cheng
+- Jeremy John
+- Trong Hai Dang 
+
+
+## Grading Essential Features
 - An application contains at least 1 activity drawn using 2D graphics.
   - **At least 1 activity drawn using 2D graphics**: The `GameView` class is responsible for drawing the game's 2D graphics. It uses the `Canvas` class to draw the player, enemy, and bullets on the screen.
 - An application works in “real-time”, and as such it includes 3 types of dynamic elements,progressing without human interaction:
@@ -17,7 +55,7 @@ Singapore... but it's the year 2100.
   - **Parallel operations by creating at least one worker thread**: The new `Thread(bulletCollisionRunnable).start();` line in the `MainActivity` class creates a new worker thread that checks for bullet collisions. This operation runs in parallel with the main thread.
 - An application ensures that threads synchronise updates to a common state with built-in synchronisation primitives, e.g. mutexes
   - **Threads synchronise updates to a common state with built-in synchronisation primitives, e.g. mutexes**: The `Handler` class is used to post `Runnable` objects to the main thread's message queue. This ensures that updates to the game state (such as the player's position, the enemy's position, and the bullet list) are synchronised and occur on the main thread, preventing race conditions.
-# Extra Features
+## Extra Features
   - An application integrates mobile features (e.g. vibrations, accelerometer, notifications, notification lights, GPS, flashlight, camera, audio, video).
     - `mediaPlayer = MediaPlayer.create(this, R.raw.game_music);`
     - The application uses the `Vibrator` service to create vibrations on hit.

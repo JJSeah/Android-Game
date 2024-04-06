@@ -221,7 +221,6 @@ public class MainActivity extends AppCompatActivity {
         screenHeight = getResources().getDisplayMetrics().heightPixels;
         // Only create a new Enemy if one doesn't already exist
         if (enemy == null) {
-            System.out.println("Creating new enemy");
             enemy = new Enemy(0, 0, ENEMY_RADIUS, ENEMY_SPEED, screenWidth, screenHeight, getResources());
             enemyThread = new EnemyThread(enemy);
             enemyThread.start();

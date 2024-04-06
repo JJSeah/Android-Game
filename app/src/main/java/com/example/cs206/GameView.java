@@ -8,6 +8,7 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.os.CountDownTimer;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.Display;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
@@ -121,7 +122,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
         countDownTimer.cancel();
         try {
             gameThread.join();
-            System.out.println("Game thread stopped");
+            Log.d("GameView", "Game thread stopped by surfaceDestroyed");
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
@@ -138,5 +139,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
     public void stop() {
         // Add code here to stop the game
         surfaceDestroyed(getHolder());
+        Log.d("GameView", "Game stopped by stop method");
+
     }
 }
