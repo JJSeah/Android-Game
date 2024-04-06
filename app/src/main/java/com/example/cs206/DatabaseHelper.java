@@ -105,6 +105,4 @@ public void insertDatabase(long timeLeftInMillis, int score) {
         return timeSpentList;
     }
 
-
-
 }

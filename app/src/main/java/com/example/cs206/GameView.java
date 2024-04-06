@@ -1,5 +1,6 @@
 package com.example.cs206;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Canvas;
@@ -7,12 +8,17 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.os.CountDownTimer;
 import android.util.DisplayMetrics;
+import android.util.Log;
+import android.view.Display;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 
 import androidx.annotation.NonNull;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.view.WindowManager;
+import android.view.WindowMetrics;
+
 public class GameView extends SurfaceView implements SurfaceHolder.Callback {
     private Player player;
     private Enemy enemy;
@@ -23,10 +29,19 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
     private volatile boolean isSurfaceActive;
     private Bitmap background;
     private Thread gameThread;
-
+    private int height;
+    private int width;
     private Context context;
 
+    @Override
+    protected void onSizeChanged(int w, int h, int oldw, int oldh) {
+        width = w;
+        height = h;
+        super.onSizeChanged(w, h, oldw, oldh);
+    }
+
     public GameView(Context context, Player player, Enemy enemy) {
+
         super(context);
         getHolder().addCallback(this);
         this.context = context;
@@ -83,16 +98,14 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
     private void updateCanvas(Canvas canvas) {
         Paint paint = new Paint();
         canvas.drawBitmap(background, 0, 0, null);
-
         player.draw(canvas, paint);
-
         enemy.draw(canvas, paint);
         enemy.drawHealthBar(canvas, paint);
-
         paint.setColor(Color.BLACK); // Change this to your preferred color
         paint.setTextSize(50); // Change this to your preferred text size
-        canvas.drawText("Time left: " + timeLeftInMillis / 1000, 10, 50, paint);
-        canvas.drawText("Player health: " + player.getHealth(), 800, 50, paint);
+        Paint timeAndHealth = new Paint();
+        canvas.drawText("Time left: " + timeLeftInMillis / 1000, width/6 , 200, paint);
+        canvas.drawText("Player health: " + player.getHealth() + "%", 3*width/5 , 200, paint);
     }
 
 //    @Override
