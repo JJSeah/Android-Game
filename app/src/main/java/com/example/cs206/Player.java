@@ -128,13 +128,16 @@ public class Player {
         final int intervalSteps = 10; // Number of steps for the reload progress
         final long timeDelta = FIRE_COOLDOWN / intervalSteps; // Time for each step
 
-        scheduler.scheduleAtFixedRate(new Runnable() {
+        Future<?>[] futureHolder = new Future<?>[1]; // Create an array to hold the Future
+
+        futureHolder[0] = scheduler.scheduleAtFixedRate(new Runnable() {
             private int steps = 0;
             @Override
             public void run() {
                 steps++;
                 if (steps >= intervalSteps) {
                     isReloading.set(false);
+                    futureHolder[0].cancel(false); // Use the Future from the array
                 }
             }
         }, timeDelta, timeDelta, TimeUnit.MILLISECONDS);

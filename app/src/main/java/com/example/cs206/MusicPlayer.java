@@ -34,10 +34,10 @@ public class MusicPlayer {
     }
 
     public void pauseMusic() {
-        if (mediaPlayer != null) {
+        if (mediaPlayer != null && mediaPlayer.isPlaying()) {
             Log.d("MUSIC", "Paused music");
             mediaPlayer.pause();
-            isPlaying = false; // Add this line
+            isPlaying = false;
         }
     }
 
